@@ -1,0 +1,22 @@
+.menu {
+  display: flex;
+  height: 8vh;
+  background-color: #FFFFFF;
+  align-items: center;
+}
+
+.menu-items {
+  display: flex;
+}
+
+.menu a {
+  color: gray;
+  text-decoration: none;
+  margin-right: 15px;
+
+}
+
+.menu a div {
+  display: flex;
+  margin: 5px;
+}

@@ -1,0 +1,60 @@
+<div class="planningtable">
+  <table>
+    <thead>
+      <tr>
+        <th>Maandag</th>
+        <th>Dinsdag</th>
+        <th>Woensdag</th>
+        <th>Donderdag</th>
+        <th>Vrijdag</th>
+        <th>Zaterdag</th>
+        <th>Zondag</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (week of planningWeeks(); track week.week ) {
+        <tr>
+          <td>
+            <div class="day">
+              <div>{{ week.monday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.tuesday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.wednesday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.thursday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.friday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.saturday.date }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="day">
+              <div>{{ week.sunday.date }}</div>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<div class="tools">
+  <div class="siteoverview"></div>
+  <div class="workeroverview"></div>
+</div>

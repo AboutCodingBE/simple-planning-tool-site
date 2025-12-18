@@ -8,5 +8,7 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('simpleplanningtool');
+  protected readonly title = signal('my-project-name');
+
+
 }

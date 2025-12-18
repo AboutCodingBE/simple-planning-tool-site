@@ -1,0 +1,31 @@
+.planningtable {
+  display: flex;
+  width: 70%;
+  margin:15px;
+}
+
+.tools{
+  display: flex;
+  width: 20%;
+  margin: 15px;
+}
+
+table {
+width: 100%;
+}
+
+.day {
+  display: flex;
+  height: 200px;
+  background-color: #EDF7F7;
+  margin: 7px;
+}
+
+.day div {
+  display: block;
+  width: 100%;
+  border: 1px solid #000000;
+  margin-top: 5px;
+  text-align: center;
+  height: 1.5em;
+}
