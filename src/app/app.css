@@ -13,10 +13,10 @@
   color: gray;
   text-decoration: none;
   margin-right: 15px;
-
 }
 
 .menu a div {
   display: flex;
   margin: 5px;
+  font-size: 18px;
 }
