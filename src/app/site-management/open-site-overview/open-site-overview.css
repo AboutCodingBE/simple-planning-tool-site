@@ -1,0 +1,27 @@
+
+
+.main-panel {
+  margin-top: 15px;
+  margin-left: 15px;
+  background: #FFFFFF;
+  border-radius: 7px;
+}
+
+
+.main-panel table {
+  width: 90%;
+  margin: 10px;
+  margin: 0 auto;
+}
+
+.main-panel table th {
+  height: 2em;
+}
+
+.main-panel table td {
+  border-top: 1px solid black;
+  height: 2em;
+  text-align: center;
+}
+
+
