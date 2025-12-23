@@ -1,1 +1,22 @@
-<p>open-site-overview works!</p>
+<div class="pane">
+  <div>
+    <table>
+      <thead>
+        <th>Werf</th>
+        <th>Klant</th>
+        <th>Geschatte tijd</th>
+        <th>Gewenste starttijd</th>
+      </thead>
+      <tbody>
+        @for (site of sites(); track site.id) {
+          <tr>
+            <td>{{ site.name }}</td>
+            <td>{{ site.customer_name }}</td>
+            <td>{{ site.duration_in_days }}</td>
+            <td>{{ site.desired_date }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
