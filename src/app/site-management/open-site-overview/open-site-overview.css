@@ -1,12 +1,8 @@
-
-
 .main-panel {
-  margin-top: 15px;
-  margin-left: 15px;
+  margin: 15px;
   background: #FFFFFF;
   border-radius: 7px;
 }
-
 
 .main-panel table {
   width: 90%;
