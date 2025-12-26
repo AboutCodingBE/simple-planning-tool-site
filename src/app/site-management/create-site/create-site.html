@@ -4,12 +4,12 @@
       <h2>Voeg een nieuwe werf toe </h2>
       <form [formGroup]="siteForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
-          <label for="name">Site Name *</label>
+          <label for="name">Werf naam *</label>
           <input
             id="name"
             type="text"
             formControlName="name"
-            placeholder="Enter site name"
+            placeholder="Werfnaam"
           />
           @if (siteForm.get('name')?.invalid && siteForm.get('name')?.touched) {
           <div class="error">Name is mandatory</div>
@@ -17,12 +17,12 @@
         </div>
 
         <div class="form-group">
-          <label for="customerName">Customer Name *</label>
+          <label for="customerName">Klant naam *</label>
           <input
             id="customerName"
             type="text"
             formControlName="customerName"
-            placeholder="Enter customer name"
+            placeholder="Klant naam"
           />
           @if (siteForm.get('customerName')?.invalid && siteForm.get('customerName')?.touched) {
           <div class="error">Customer name is mandatory</div>
@@ -36,12 +36,12 @@
               type="checkbox"
               formControlName="isPrivateCustomer"
             />
-            Private Customer
+            Privé klant?
           </label>
         </div>
 
         <div class="form-group">
-          <label for="desiredDate">Desired Date</label>
+          <label for="desiredDate">Gewenste uitvoeringsdatum</label>
           <input
             id="desiredDate"
             type="date"
@@ -50,12 +50,12 @@
         </div>
 
         <div class="form-group">
-          <label for="durationInDays">Duration (Days)</label>
+          <label for="durationInDays">Duur (Dagen)</label>
           <input
             id="durationInDays"
             type="number"
             formControlName="durationInDays"
-            placeholder="Enter duration in days"
+            placeholder="Duur in dagen"
             min="1"
           />
         </div>
@@ -66,11 +66,11 @@
             id="transport"
             type="text"
             formControlName="transport"
-            placeholder="Enter transport details"
+            placeholder="Transport details"
           />
         </div>
 
-        <button type="submit" [disabled]="siteForm.invalid">Create</button>
+        <button type="submit" [disabled]="siteForm.invalid">Aanmaken</button>
       </form>
     </div>
 
