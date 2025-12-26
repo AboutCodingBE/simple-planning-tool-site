@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SiteView } from './views'
 
 @Component({
   selector: 'app-open-site-overview',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './open-site-overview.html',
   styleUrl: './open-site-overview.css',
 })

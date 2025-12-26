@@ -14,6 +14,7 @@
             <td>{{ site.customer_name }}</td>
             <td>{{ site.duration_in_days }}</td>
             <td>{{ site.desired_date }}</td>
+            <td><button [routerLink]="['/site-management/changeSite', site.id]">Aanpassen</button></td>
           </tr>
         }
       </tbody>

@@ -1,1 +1,78 @@
-<p>change-site works!</p>
+<div class="component-body">
+  <div class="main-panel">
+    <div class="form-container">
+      <h2>Wijzigen Werf: </h2>
+      <form [formGroup]="siteForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Werf naam *</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Werfnaam"
+          />
+          @if (siteForm.get('name')?.invalid && siteForm.get('name')?.touched) {
+          <div class="error">Name is mandatory</div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="customerName">Klant naam *</label>
+          <input
+            id="customerName"
+            type="text"
+            formControlName="customerName"
+            placeholder="Klant naam"
+          />
+          @if (siteForm.get('customerName')?.invalid && siteForm.get('customerName')?.touched) {
+          <div class="error">Customer name is mandatory</div>
+          }
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="isPrivateCustomer">
+            <input
+              id="isPrivateCustomer"
+              type="checkbox"
+              formControlName="isPrivateCustomer"
+            />
+            Privé klant?
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="desiredDate">Gewenste uitvoeringsdatum</label>
+          <input
+            id="desiredDate"
+            type="date"
+            formControlName="desiredDate"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="durationInDays">Duur (Dagen)</label>
+          <input
+            id="durationInDays"
+            type="number"
+            formControlName="durationInDays"
+            placeholder="Duur in dagen"
+            min="1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="transport">Transport</label>
+          <input
+            id="transport"
+            type="text"
+            formControlName="transport"
+            placeholder="Transport details"
+          />
+        </div>
+
+        <button type="submit" [disabled]="siteForm.invalid">Wijzigen opslaan</button>
+      </form>
+    </div>
+
+  </div>
+</div>
