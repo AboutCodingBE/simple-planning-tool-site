@@ -1,1 +1,28 @@
 <p>drag-drop works!</p>
+
+<div class="container">
+  <div class="list">
+    <div class="todo"
+         cdkDropList
+         #toPlanList="cdkDropList"
+         [cdkDropListData]="toPlan"
+         [cdkDropListConnectedTo]="[plannedList]"
+         (cdkDropListDropped)="drop($event)">
+      @for (item of toPlan; track item) {
+      <div class="item" cdkDrag >{{ item }}</div>
+      }
+    </div>
+  </div>
+  <div class="list">
+    <div class="done"
+         cdkDropList
+         #plannedList="cdkDropList"
+         [cdkDropListData]="planned"
+         [cdkDropListConnectedTo]="[toPlanList]"
+         (cdkDropListDropped)="drop($event)">
+      @for (item of planned; track item) {
+      <div class="item" cdkDrag >{{ item }}</div>
+      }
+    </div>
+  </div>
+</div>

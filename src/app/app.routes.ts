@@ -6,6 +6,7 @@ import { CreateSite } from './site-management/create-site/create-site'
 import { Innerroutertest } from './innerroutertest/innerroutertest'
 import { Inner1 } from './innerroutertest/inner1/inner1'
 import { Inner2 } from './innerroutertest/inner2/inner2'
+import { DragDrop } from './drag-drop/drag-drop'
 
 export const routes: Routes = [
   {path: '', redirectTo: '/planning-overview', pathMatch: 'full'},
@@ -22,4 +23,5 @@ export const routes: Routes = [
       { path: 'inner1', component: Inner1 },
       { path: 'inner2', component: Inner2 },
       ]},
+    {path: 'dragndrop', component: DragDrop}
  ];

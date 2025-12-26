@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  width: 450px;
+  background: #FFFFFF;
+}
+
+.list {
+  display: block;
+  width: 200px;
+  margin-right: 10px;
+  border: 1px solid black;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  height: 1.5em;
+  border-bottom: 1px solid black;
+}
