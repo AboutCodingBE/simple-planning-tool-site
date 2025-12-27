@@ -19,7 +19,7 @@ export class OpenSiteOverview {
    }
 
    getOverview() {
-     this.client.get<SiteView[]>(`http://localhost:8080/sites`).subscribe(result => {
+     this.client.get<SiteView[]>(`http://localhost:8080/sites/open`).subscribe(result => {
              console.log(result);
              this.sites.set(result);
            });
