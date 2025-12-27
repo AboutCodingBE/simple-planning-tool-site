@@ -26,3 +26,12 @@ export interface SiteView {
   duration_in_days: number;  // Note: snake_case to match @JsonProperty
   status: string;
 }
+
+export interface UnplannedSite {
+  id: number,
+  name: string,
+  customer_name: string,
+  duration_in_days: number,
+  desired_date: string,
+  planned_date: string
+}

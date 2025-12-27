@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Planning, Week } from './domain'
+import { Planning, Week, UnplannedSite } from './domain'
 
 @Component({
   selector: 'planning-overview',
@@ -13,9 +13,11 @@ export class PlanningOverview {
   private client = inject(HttpClient);
 
   planningWeeks = signal<Week[]>([]);
+  unplannedSites = signal<UnplannedSite[]>([])
 
   ngOnInit() {
     this.getDefaultPlanning();
+    this.getUnplannedSites();
   }
 
   getDefaultPlanning() {
@@ -23,6 +25,14 @@ export class PlanningOverview {
         console.log(result.weeks);
         this.planningWeeks.set(result.weeks);
       });
-    }
+  }
+
+  getUnplannedSites() {
+    this.client.get<UnplannedSite[]>('http://localhost:8080/sites/unplanned')
+      .subscribe(result => {
+        console.log(result);
+        this.unplannedSites.set(result);
+    });
+  }
 
 }

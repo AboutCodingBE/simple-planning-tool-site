@@ -1,13 +1,34 @@
-.planningtable {
+.component {
   display: flex;
+  width: 100%;
+}
+
+.planningtable {
+  display: block;
   width: 70%;
   margin:15px;
+  background: pink;
 }
 
 .tools{
-  display: flex;
+  display: block;
   width: 20%;
   margin: 15px;
+}
+
+.siteoverview{
+  display: block;
+  width: 49%;
+  margin: 15px;
+}
+
+.unplanned {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+  height: 1.5em;
+  border: 1px solid black;
+  text-align: center;
 }
 
 table {
