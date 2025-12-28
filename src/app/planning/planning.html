@@ -1,5 +1,8 @@
 <div class="component">
   <div class="planningtable">
+    <div class="tabletoolbar">
+      <h2>Planning:</h2>
+    </div>
     <table>
       <thead>
       <tr>
@@ -126,13 +129,15 @@
     </table>
   </div>
   <div class="tools">
+    <div class="tools-toolbar">
+      <h2>Werven:</h2>
+    </div>
     <div class="siteoverview"
          cdkDropList
          #unplanned="cdkDropList"
          [cdkDropListData]="unplannedSites()"
          [cdkDropListConnectedTo]="getConnectedLists()"
          (cdkDropListDropped)="drop($event)">
-      <h2>Werven</h2>
       @for (site of unplannedSites(); track site.id) {
       <div class="unplanned" cdkDrag >{{ site.name }}</div>
       }
