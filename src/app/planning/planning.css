@@ -1,3 +1,7 @@
+/**
+GRAY: BFBFBF
+**/
+
 .component {
   display: flex;
   width: 100%;
@@ -7,7 +11,7 @@
   display: block;
   width: 70%;
   margin:15px;
-  background: pink;
+  background: #FFFFFF;
 }
 
 .tools{
@@ -39,33 +43,35 @@ table {
 .day {
   display: block;
   height: 200px;
-  background-color: #EDF7F7;
   margin: 7px;
   border-radius: 10px;
+  border: 1px solid #BFBFBF;
+  box-shadow: 3px 3px 7px #BFBFBF;
+  text-align: center;
 }
 
 .day .date {
   display: block;
   width: 100%;
-  border: 1px solid #000000;
+  border-bottom: 1px solid #BFBFBF;
   margin-top: 5px;
   text-align: center;
   height: 1.5em;
 }
 
 .day .planned-list {
-  display: block;
-  min-height: 1.5em;
+  display: flex;
+  min-height: 9em;
   width: 100%;
   margin-top: 5px;
-  border: 1px solid black;
 }
 
 .day .planned-list .site {
   display: block;
   width:100%;
+  font-size: 0.9em;
+  color: #787878;
   height: 1.5em;
   text-align: center;
-
   overflow: hidden;
 }
