@@ -41,6 +41,13 @@ export class PlanningOverview {
     });
   }
 
+  planSite(siteId: number, executionDate: string) {
+    this.client.patch(`http://localhost:8080/planning/sites/${siteId}?date=${executionDate}`, null)
+      .subscribe(result => {
+        console.log('Updated:', result);
+      });
+  }
+
   private getDaysFromWeek(week: Week): Day[] {
       return [
         week.monday,
@@ -74,6 +81,10 @@ export class PlanningOverview {
         event.currentIndex,
       );
     }
+
+    const siteId = event.container.data[0].id;
+    const executionDate = event.container.element.nativeElement.id;
+    this.planSite(siteId, executionDate);
   }
 
 }
