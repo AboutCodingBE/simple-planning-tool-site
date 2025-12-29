@@ -82,7 +82,7 @@ export class PlanningOverview {
       );
     }
 
-    const siteId = event.container.data[0].id;
+    const siteId = event.container.data[event.currentIndex].id;
     const executionDate = event.container.element.nativeElement.id;
     this.planSite(siteId, executionDate);
   }

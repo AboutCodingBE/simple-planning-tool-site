@@ -78,10 +78,12 @@ table {
   margin-top: 5px;
   text-align: center;
   height: 1.5em;
+  font-weight: 700;
+  color: #787878;
 }
 
 .day .planned-list {
-  display: flex;
+  display: block;
   min-height: 9em;
   width: 100%;
   margin-top: 5px;
@@ -89,11 +91,14 @@ table {
 
 .day .planned-list .site {
   display: block;
-  width:100%;
+  width:95%;
   font-size: 0.9em;
-  color: #787878;
+  color: #BFBFB;
+  background: #E3E3E3;
+  border-left: 4px solid #BFBFBF;
   height: 1.5em;
   text-align: center;
   overflow: hidden;
   cursor: move;
+  margin-bottom: 4px;
 }

@@ -58,7 +58,7 @@ export class ChangeSite {
         transport: formValue.transport ?? null,
       };
 
-      this.http.post('http://localhost:8080/sites/', request).subscribe({
+      this.http.put(`http://localhost:8080/sites/${this.site()?.id}`, request).subscribe({
         next: (response) => {
           console.log('Site updated successfully:', response);
 
