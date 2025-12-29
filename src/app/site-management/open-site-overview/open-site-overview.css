@@ -1,13 +1,25 @@
-.main-panel {
+.component-body {
+  display: block;
+  height: 100%;
   margin: 15px;
+}
+
+.main-panel {
+  display: block;
   background: #FFFFFF;
   border-radius: 7px;
+  overflow: hidden;
+}
+
+.title {
+  display: block;
+  margin: 15px;
 }
 
 .main-panel table {
   width: 90%;
   margin: 10px;
-  margin: 0 auto;
+  margin: 15px, 0px, 15px, 15px;
 }
 
 .main-panel table th {
@@ -15,7 +27,6 @@
 }
 
 .main-panel table td {
-  border-top: 1px solid black;
   height: 2em;
   text-align: center;
 }
