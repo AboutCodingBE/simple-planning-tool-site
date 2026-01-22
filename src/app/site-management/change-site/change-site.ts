@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UpdateSiteRequest, SiteResponse } from './dto'
 import { Site } from '../domain'
@@ -14,6 +14,7 @@ import { Site } from '../domain'
 export class ChangeSite {
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private http = inject(HttpClient);
   site = signal<SiteResponse | null>(null);
 
@@ -61,6 +62,7 @@ export class ChangeSite {
       this.http.put(`http://localhost:8080/sites/${this.site()?.id}`, request).subscribe({
         next: (response) => {
           console.log('Site updated successfully:', response);
+          this.router.navigate(['/site-management/open-overview']);
 
         },
         error: (error) => {
