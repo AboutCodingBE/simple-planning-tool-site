@@ -46,6 +46,6 @@ export class CreateSite {
            console.error('Error creating site:', error);
          }
        });
-     }
-   }
+    }
+  }
 }
