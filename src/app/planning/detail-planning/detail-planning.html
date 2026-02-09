@@ -1,0 +1,57 @@
+<div class="main-panel">
+  <div class="site-details">
+    @if (siteDetail() != null) {
+    <div class="site-detail">
+      <div class="site">
+        <h2>{{ siteDetail()!.name }}</h2>
+        <div class="property">
+          <span>Klant naam: </span><span>{{ siteDetail()!.customer.customer_name }}</span>
+        </div>
+        <div class="property">
+          <span>Gewenste uitvoerdatum: </span><span>{{ siteDetail()!.desired_date }}</span>
+        </div>
+        <div class="property">
+          <span>Geplande uitvoerdatum: </span><span>{{ siteDetail()!.planned_date }}</span>
+        </div>
+        <div class="property">
+          <span>Duur (Dagen): </span><span>{{ siteDetail()!.duration_in_days }}</span>
+        </div>
+        <div class="property">
+          <span>Transport: </span><span>{{ siteDetail()!.transport }}</span>
+        </div>
+      </div>
+      <div class="workers">
+        <h2>Werkkrachten</h2>
+        <div cdkDropList id="linked"
+             [cdkDropListData]="linkedWorkers() ?? []"
+             [cdkDropListConnectedTo]="['idle']"
+             (cdkDropListDropped)="link($event)"
+             class="linked-workers-list">
+          @for (worker of linkedWorkers(); track worker.id ) {
+          <div class="worker" cdkDrag>
+            <span>{{ worker.first_name }}</span><span>{{ worker.last_name }}</span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+    <button (click)="toPlanningOverview()">Terug naar overzicht</button>
+  </div>
+  <div class="idle-workers">
+    <div class="container">
+      <h2>Beschikbare werkkrachten</h2>
+      <div cdkDropList id="idle"
+           [cdkDropListData]="idleWorkers() ?? []"
+           [cdkDropListConnectedTo]="['linked']"
+           (cdkDropListDropped)="unlink($event)"
+           class="idle-workers-list">
+        @for (worker of idleWorkers(); track worker.id ) {
+        <div class="worker" cdkDrag>
+          <span>{{ worker.first_name }}</span><span>{{ worker.last_name }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

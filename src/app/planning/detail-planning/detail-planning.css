@@ -1,0 +1,55 @@
+.main-panel {
+  display: flex;
+  width: 100%;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.site-details {
+  display: block;
+  margin: 15px;
+  background: #FFFFFF;
+  border-radius: 7px;
+}
+
+.idle-workers {
+  display: block;
+  width: 20%;
+  margin: 15px;
+  background: #FFFFFF;
+  border-radius: 7px;
+}
+
+.site-detail {
+  display: flex;
+  width: 100%;
+  margin:15px;
+}
+
+.site {
+  display: block;
+  margin: 5px;
+}
+
+.workers {
+  display: block;
+  width: 25%;
+  margin: 5px;
+}
+
+.idle-workers .container {
+  display: block;
+  margin: 15px;
+}
+
+.linked-workers-list {
+  display: block;
+  min-height: 9em;
+  width: 100%;
+  margin-top: 5px;
+  border: 1px solid black;
+}
+

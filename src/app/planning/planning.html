@@ -28,7 +28,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.monday.sites; track site.id) {
-                <div class="site" cdkDrag >{{ site.name }}</div>
+                <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.monday.date)">{{ site.name }}</div>
               }
             </div>
           </div>
@@ -43,7 +43,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.tuesday.sites; track site.id) {
-              <div class="site" cdkDrag >{{ site.name }}</div>
+              <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.tuesday.date)">{{ site.name }}</div>
               }
             </div>
           </div>
@@ -58,7 +58,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.wednesday.sites; track site.id) {
-              <div class="site" cdkDrag >{{ site.name }}</div>
+              <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.wednesday.date)" >{{ site.name }}</div>
               }
             </div>
           </div>
@@ -73,7 +73,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.thursday.sites; track site.id) {
-                <div class="site" cdkDrag >{{ site.name }}</div>
+                <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.thursday.date)" >{{ site.name }}</div>
               }
             </div>
           </div>
@@ -88,7 +88,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.friday.sites; track site.id) {
-                <div class="site" cdkDrag>{{ site.name }}</div>
+                <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.friday.date)">{{ site.name }}</div>
               }
             </div>
           </div>
@@ -103,7 +103,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.saturday.sites; track site.id) {
-                <div class="site" cdkDrag>{{ site.name }}</div>
+                <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.saturday.date)">{{ site.name }}</div>
               }
             </div>
           </div>
@@ -118,7 +118,7 @@
                  [cdkDropListConnectedTo]="getConnectedLists()"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.sunday.sites; track site.id) {
-              <div class="site" cdkDrag >{{ site.name }}</div>
+              <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.sunday.date)" >{{ site.name }}</div>
               }
             </div>
           </div>

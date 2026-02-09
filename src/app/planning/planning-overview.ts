@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Planning, Week, UnplannedSite, SiteView, Day } from './domain';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem,} from '@angular/cdk/drag-drop';
@@ -12,6 +13,7 @@ import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem,} 
 })
 export class PlanningOverview {
   private client = inject(HttpClient);
+  private router = inject(Router);
 
   planningWeeks = signal<Week[]>([]);
   unplannedSites = signal<SiteView[]>([])
@@ -85,6 +87,13 @@ export class PlanningOverview {
     const siteId = event.container.data[event.currentIndex].id;
     const executionDate = event.container.element.nativeElement.id;
     this.planSite(siteId, executionDate);
+  }
+
+  toDetailPlanning(siteId: number, date: string) {
+    this.router.navigate(['detail-planning', siteId, date]);
+//     if (!event.defaultPrevented) {
+//         this.router.navigate(['detail-planning', siteId, date]);
+//     }
   }
 
 }
