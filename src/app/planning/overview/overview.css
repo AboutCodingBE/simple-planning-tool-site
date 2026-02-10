@@ -1,0 +1,104 @@
+/**
+GRAY: BFBFBF
+**/
+
+.component {
+  display: flex;
+  width: 100%;
+}
+
+.planningtable {
+  display: block;
+  width: 70%;
+  margin:15px;
+  background: #FFFFFF;
+}
+
+.tools {
+  display: block;
+  width: 20%;
+  margin: 15px 15px 15px 0px;
+  background: #FFFFFF;
+}
+
+.tools-toolbar {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  margin-left: 15px;
+  height: 3em;
+}
+
+.siteoverview{
+  display: block;
+  width: 49%;
+  margin: 15px;
+}
+
+.unplanned {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+  height: 1.5em;
+  text-align: center;
+  background: #E3E3E3;
+  border-radius: 5px;
+  cursor: move;
+  border-left: 4px solid #BFBFBF;
+}
+
+.tabletoolbar {
+  display: block;
+  width: 100%;
+  height: 3em;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  margin-top: 15px;
+}
+
+.day {
+  display: block;
+  height: 200px;
+  margin: 7px;
+  border-radius: 10px;
+  border: 1px solid #BFBFBF;
+  box-shadow: 3px 3px 7px #BFBFBF;
+  text-align: center;
+}
+
+.day .date {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid #BFBFBF;
+  margin-top: 5px;
+  text-align: center;
+  height: 1.5em;
+  font-weight: 700;
+  color: #787878;
+}
+
+.day .planned-list {
+  display: block;
+  min-height: 9em;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.day .planned-list .site {
+  display: block;
+  width:95%;
+  font-size: 0.9em;
+  color: #BFBFB;
+  background: #E3E3E3;
+  border-left: 4px solid #BFBFBF;
+  height: 1.5em;
+  text-align: center;
+  overflow: hidden;
+  cursor: move;
+  margin-bottom: 4px;
+}
