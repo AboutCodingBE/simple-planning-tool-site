@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { PlanningOverview } from './planning/planning-overview'
+import { DetailPlanning } from './planning/detail-planning/detail-planning'
 import { SiteManagement } from './site-management/site-management'
 import { OpenSiteOverview } from './site-management/open-site-overview/open-site-overview'
 import { CreateSite } from './site-management/create-site/create-site'
@@ -11,6 +12,7 @@ import { Dayplanning } from './manage-workers/dayplanning/dayplanning'
 export const routes: Routes = [
   {path: '', redirectTo: '/planning-overview', pathMatch: 'full'},
   {path: 'planning-overview', component: PlanningOverview},
+  {path: 'detail-planning/:id/:date', component: DetailPlanning},
   {path: 'site-management', component: SiteManagement,
     children: [
         { path: '', redirectTo: 'open-overview', pathMatch: 'full' },
