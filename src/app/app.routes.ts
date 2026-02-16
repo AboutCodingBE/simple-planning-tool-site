@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PlanningOverview } from './planning/planning-overview'
 import { Overview } from './planning/overview/overview'
 import { DetailPlanning } from './planning/detail-planning/detail-planning'
+import { SiteDayplanning } from './planning/site-dayplanning/site-dayplanning'
 import { SiteManagement } from './site-management/site-management'
 import { OpenSiteOverview } from './site-management/open-site-overview/open-site-overview'
 import { CreateSite } from './site-management/create-site/create-site'
@@ -15,7 +16,8 @@ export const routes: Routes = [
   {path: 'planning-overview', component: PlanningOverview,
     children: [
         { path: '', redirectTo: 'overview', pathMatch: 'full' },
-        { path: 'overview', component:Overview }
+        { path: 'overview', component:Overview },
+        { path: 'sitedayplanning', component: SiteDayplanning }
       ]},
   {path: 'detail-planning/:id/:date', component: DetailPlanning},
   {path: 'site-management', component: SiteManagement,
