@@ -1,0 +1,28 @@
+<div class="main-panel">
+  <div class="sitedayplanning">
+    <div class="date-picker">
+      <label for="date">Planning voor:</label>
+      <input
+        type="date"
+        id="date"
+        [value]="planningDate()"
+        (change)="onDateChange($event)"
+      />
+    </div>
+    <div class="overview">
+      @for (site of plannedSites(); track site.site_id) {
+        <div class="site">
+          <span>{{ site.site_name }}</span>
+          <span>Gestart op: {{ site.execution_date }}</span>
+          <span>Duur in dagen: {{ site.duration_in_days }}</span>
+          <span>Eindigt op: {{ site.end_date }}</span>
+        </div>
+        <div class="workers">
+          @for (worker of site.workers; track worker.worker_id) {
+            <span>{{ worker.worker_firstname }} {{worker.worker_lastname }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
