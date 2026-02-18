@@ -31,7 +31,6 @@ export class SiteDayplanning {
   onDateChange(event: Event) {
     const input = event.target as HTMLInputElement;
     this.planningDate.set(input.value);
-    // Effect automatically triggers fetchDataForDate!
   }
 
   fetchDataForDate() {
