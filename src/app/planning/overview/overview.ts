@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Planning, Week, UnplannedSite, SiteView, Day } from '../domain';
@@ -16,15 +16,57 @@ export class Overview {
   private router = inject(Router);
 
   planningWeeks = signal<Week[]>([]);
-  unplannedSites = signal<SiteView[]>([])
+  unplannedSites = signal<SiteView[]>([]);
+
+  fromDate = signal<string>(this.getTodayDate());
+  untilDate = signal<string>(this.getTodayDate(30));
+
+  dateError = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const from = new Date(this.fromDate());
+      const until = new Date(this.untilDate());
+
+      if (from >= until) {
+        this.dateError.set('Start datum is gelijk aan of na de eind datum');
+      }
+      else if (until < from) {
+        this.dateError.set('Einddatum is voor de start datum');
+      }else {
+        this.dateError.set(null);
+        if (!this.dateError()) {
+          this.getPlanning();
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-    this.getDefaultPlanning();
+    if (!this.dateError()) {
+        this.getPlanning();
+      }
     this.getUnplannedSites();
   }
 
-  getDefaultPlanning() {
-      this.client.get<Planning>(`http://localhost:8080/planning`).subscribe(result => {
+  private getTodayDate(daysToAdd: number = 0): string {
+    const date = new Date();
+    date.setDate(date.getDate() + daysToAdd);
+    return date.toISOString().split('T')[0];
+  }
+
+  onFromDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.fromDate.set(input.value);
+  }
+
+  onUntilDateChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.untilDate.set(input.value);
+  }
+
+  getPlanning() {
+      this.client.get<Planning>(`http://localhost:8080/planning?from=${this.fromDate()}&until=${this.untilDate()}`).subscribe(result => {
         console.log(result.weeks);
         this.planningWeeks.set(result.weeks);
       });
@@ -91,8 +133,5 @@ export class Overview {
 
     toDetailPlanning(siteId: number, date: string) {
       this.router.navigate(['detail-planning', siteId, date]);
-  //     if (!event.defaultPrevented) {
-  //         this.router.navigate(['detail-planning', siteId, date]);
-  //     }
     }
 }

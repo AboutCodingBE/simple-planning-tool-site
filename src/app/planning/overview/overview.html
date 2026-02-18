@@ -1,7 +1,28 @@
 <div class="component">
   <div class="planningtable">
     <div class="tabletoolbar">
-      <h2>Planning:</h2>
+      <div class="title">
+        <h2>Planning:</h2>
+      </div>
+      <div class="date-picker">
+        <label for="from">Van</label>
+        <input
+          type="date"
+          id="from"
+          [value]="fromDate()"
+          (change)="onFromDateChange($event)"
+        />
+        <label for="until">tot</label>
+        <input
+          type="date"
+          id="until"
+          [value]="untilDate()"
+          (change)="onUntilDateChange($event)"
+        />
+        @if (dateError()) {
+        <div class="error">{{ dateError() }}</div>
+        }
+      </div>
     </div>
     <table>
       <thead>
