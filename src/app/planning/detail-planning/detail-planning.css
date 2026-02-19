@@ -1,55 +1,135 @@
 .main-panel {
   display: flex;
   width: 100%;
+  padding: 24px;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1F2937;
 }
 
 .site-details {
   display: block;
-  margin: 15px;
+  flex: 1;
   background: #FFFFFF;
-  border-radius: 7px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 24px;
 }
 
 .idle-workers {
   display: block;
-  width: 20%;
-  margin: 15px;
+  width: 240px;
+  flex-shrink: 0;
   background: #FFFFFF;
-  border-radius: 7px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .site-detail {
   display: flex;
-  width: 100%;
-  margin:15px;
+  gap: 32px;
+  margin-bottom: 20px;
 }
 
 .site {
   display: block;
-  margin: 5px;
+  flex: 1;
+}
+
+.property {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.property:last-child {
+  border-bottom: none;
+}
+
+.property span:first-child {
+  color: #9CA3AF;
+  min-width: 180px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.property span:last-child {
+  color: #1F2937;
+  font-weight: 500;
 }
 
 .workers {
   display: block;
-  width: 25%;
-  margin: 5px;
+  width: 260px;
+  flex-shrink: 0;
 }
 
 .idle-workers .container {
   display: block;
-  margin: 15px;
+  padding: 20px;
 }
 
-.linked-workers-list {
+.linked-workers-list,
+.idle-workers-list {
   display: block;
   min-height: 9em;
-  width: 100%;
-  margin-top: 5px;
-  border: 1px solid black;
+  border: 2px dashed #E5E7EB;
+  border-radius: 12px;
+  padding: 8px;
+  background: #F9FAFB;
+  transition: border-color 0.2s ease;
 }
 
+.linked-workers-list:hover,
+.idle-workers-list:hover {
+  border-color: #D1D5DB;
+}
+
+.worker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background: #DBEAFE;
+  border: 1px solid #BFDBFE;
+  border-radius: 8px;
+  color: #1E40AF;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: move;
+  transition: background 0.2s ease;
+}
+
+.worker:hover {
+  background: #BFDBFE;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: #F3F4F6;
+  color: #1F2937;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  margin-top: 16px;
+}
+
+button:hover {
+  background: #E5E7EB;
+}

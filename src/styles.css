@@ -1,30 +1,24 @@
-html,body{
-	height:100%;
-    height: 100vp;
-	background-color:#CCCCCC;
+html, body {
+  height: 100%;
+  background: linear-gradient(135deg, #E8F0FF 0%, #FFE8F0 100%);
+  background-attachment: fixed;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  color: #6B7280;
 }
 
 body, div,
 h1, h2, h3, h4, h5, h6,
- blockquote, pre, dl, dt, dd, ol, ul, li, hr,
+blockquote, pre, dl, dt, dd, ol, ul, li, hr,
 fieldset, form, label, legend, th, td,
 article, aside, figure, footer, header, hgroup, menu, nav, section,
 summary, hgroup {
   margin: 0;
   padding: 0;
   border: 0;
+  box-sizing: border-box;
 }
 
-ol{
-	list-style-type:none;
+ol {
+  list-style-type: none;
 }
-
-/*
-a:link,
-a:visited,
-a:active,
-a:hover {
-  outline: 0;
-  text-decoration:none;
-}
-*/
