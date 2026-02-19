@@ -1,114 +1,214 @@
-/**
-GRAY: BFBFBF
-**/
-
 .component {
   display: flex;
   width: 100%;
+  padding: 16px;
+  gap: 16px;
+  box-sizing: border-box;
 }
 
 .planningtable {
   display: block;
-  width: 70%;
-  margin:15px;
-  background: #FFFFFF;
+  flex: 1;
+  min-width: 0;
+  background: rgba(30, 58, 95, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .tools {
-  display: block;
-  width: 20%;
-  margin: 15px 15px 15px 0px;
-  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  flex-shrink: 0;
+  background: rgba(30, 58, 95, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .tools-toolbar {
   display: block;
-  width: 100%;
-  margin-top: 15px;
-  margin-left: 15px;
-  height: 3em;
+  padding: 16px 16px 8px;
 }
 
-.siteoverview{
+.tools-toolbar h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.siteoverview {
   display: block;
-  width: 49%;
-  margin: 15px;
+  padding: 8px 12px;
+  flex: 1;
+  min-height: 80px;
+}
+
+.workeroverview {
+  display: block;
 }
 
 .unplanned {
   display: block;
   width: 100%;
-  margin-bottom: 5px;
-  height: 1.5em;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  height: 1.75em;
+  line-height: 1.75em;
   text-align: center;
-  background: #E3E3E3;
-  border-radius: 5px;
+  background: rgba(255, 107, 71, 0.1);
+  border-radius: 6px;
   cursor: move;
-  border-left: 4px solid #BFBFBF;
+  border-left: 3px solid rgba(255, 107, 71, 0.6);
+  color: #FFFFFF;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.unplanned:hover {
+  background: rgba(255, 107, 71, 0.2);
 }
 
 .tabletoolbar {
-  display: block;
-  width: 100%;
-  height: 3em;
-  margin-left: 15px;
-  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tabletoolbar .title h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-picker label {
+  color: #A8B8D8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.date-picker input[type='date'] {
+  background: rgba(15, 24, 40, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+.date-picker input[type='date']:focus {
+  outline: none;
+  border-color: #36D9D4;
+  box-shadow: 0 0 0 3px rgba(54, 217, 212, 0.15);
+}
+
+.date-picker input[type='date']:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.error {
+  color: #EF4444;
+  font-size: 0.8125rem;
 }
 
 table {
   width: 100%;
   table-layout: fixed;
-  margin-top: 15px;
+  border-collapse: collapse;
+  margin-top: 0;
+}
+
+table th {
+  padding: 12px 4px;
+  color: #A8B8D8;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .day {
   display: block;
-  height: 200px;
-  margin: 7px;
+  min-height: 180px;
+  margin: 6px;
   border-radius: 10px;
-  border: 1px solid #BFBFBF;
-  box-shadow: 3px 3px 7px #BFBFBF;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 24, 40, 0.3);
   text-align: center;
+  transition: all 0.2s ease;
+}
+
+.day:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(15, 24, 40, 0.4);
 }
 
 .day .date {
   display: block;
   width: 100%;
-  border-bottom: 1px solid #BFBFBF;
-  margin-top: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 0;
   text-align: center;
-  height: 1.5em;
-  font-weight: 700;
-  color: #787878;
+  font-weight: 600;
+  color: #A8B8D8;
+  font-size: 0.75rem;
 }
 
 .day .planned-list {
   display: block;
-  min-height: 9em;
+  min-height: 7em;
   width: 100%;
-  margin-top: 5px;
+  padding: 4px;
 }
 
 .day .planned-list .site {
   display: block;
-  width:95%;
-  font-size: 0.9em;
-  color: #BFBFB;
-  background: #E3E3E3;
-  border-left: 4px solid #BFBFBF;
-  height: 1.5em;
+  width: 95%;
+  margin: 0 auto 4px;
+  font-size: 0.8125rem;
+  color: #FFFFFF;
+  background: rgba(54, 217, 212, 0.12);
+  border-left: 3px solid #36D9D4;
+  height: 1.75em;
+  line-height: 1.75em;
   text-align: center;
   overflow: hidden;
+  white-space: nowrap;
   cursor: move;
-  margin-bottom: 4px;
+  border-radius: 0 4px 4px 0;
+  transition: background 0.2s ease;
+}
+
+.day .planned-list .site:hover {
+  background: rgba(54, 217, 212, 0.22);
 }
 
 .day.passed {
-  opacity: 0.5;
-  background-color: #f0f0f0;
+  opacity: 0.45;
+  background: rgba(10, 15, 25, 0.3);
 }
 
 .day.passed .site {
   cursor: not-allowed;
-  color: #999;
+  color: #6B7A99;
 }

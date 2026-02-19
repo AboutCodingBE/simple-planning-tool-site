@@ -1,34 +1,77 @@
 .component-body {
   display: block;
-  height: 100%;
-  margin: 15px;
+  padding: 24px;
 }
 
 .main-panel {
   display: block;
-  background: #FFFFFF;
-  border-radius: 7px;
+  background: rgba(30, 58, 95, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   overflow: hidden;
 }
 
 .title {
   display: block;
-  margin: 15px;
+  padding: 20px 24px 0;
+}
+
+.title h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
 }
 
 .main-panel table {
-  width: 90%;
-  margin: 10px;
-  margin: 15px, 0px, 15px, 15px;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 0;
 }
 
 .main-panel table th {
-  height: 2em;
+  text-align: left;
+  padding: 10px 24px;
+  color: #A8B8D8;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  height: auto;
 }
 
 .main-panel table td {
-  height: 2em;
-  text-align: center;
+  padding: 12px 24px;
+  color: #A8B8D8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  height: auto;
+  text-align: left;
 }
 
+.main-panel table tr:last-child td {
+  border-bottom: none;
+}
 
+.main-panel table tr:hover td {
+  background: rgba(54, 217, 212, 0.04);
+}
+
+.main-panel table button {
+  padding: 6px 14px;
+  background: rgba(74, 158, 255, 0.15);
+  color: #4A9EFF;
+  border: 1px solid rgba(74, 158, 255, 0.3);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.main-panel table button:hover {
+  background: rgba(74, 158, 255, 0.25);
+  border-color: #4A9EFF;
+}
