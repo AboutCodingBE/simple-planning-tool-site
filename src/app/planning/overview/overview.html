@@ -46,7 +46,9 @@
                  cdkDropList
                  [id]="week.monday.date"
                  [cdkDropListData]="week.monday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.monday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.monday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.monday.date)">{{ site.name }}</div>
@@ -61,7 +63,9 @@
                  cdkDropList
                  [id]="week.tuesday.date"
                  [cdkDropListData]="week.tuesday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.tuesday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.tuesday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.tuesday.date)">{{ site.name }}</div>
@@ -76,7 +80,9 @@
                  cdkDropList
                  [id]="week.wednesday.date"
                  [cdkDropListData]="week.wednesday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.wednesday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.wednesday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.wednesday.date)" >{{ site.name }}</div>
@@ -91,7 +97,9 @@
                  cdkDropList
                  [id]="week.thursday.date"
                  [cdkDropListData]="week.thursday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.thursday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.thursday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.thursday.date)" >{{ site.name }}</div>
@@ -106,7 +114,9 @@
                  cdkDropList
                  [id]="week.friday.date"
                  [cdkDropListData]="week.friday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.friday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.friday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.friday.date)">{{ site.name }}</div>
@@ -121,7 +131,9 @@
                  cdkDropList
                  [id]="week.saturday.date"
                  [cdkDropListData]="week.saturday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.saturday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.saturday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.saturday.date)">{{ site.name }}</div>
@@ -136,7 +148,9 @@
                  cdkDropList
                  [id]="week.sunday.date"
                  [cdkDropListData]="week.sunday.sites"
-                 [cdkDropListConnectedTo]="getConnectedLists()"
+                 [cdkDropListConnectedTo]="getConnectedListsExcludingPast()"
+                 [cdkDropListDisabled]="isPastDate(week.sunday.date)"
+                 [cdkDropListEnterPredicate]="canDropPredicate"
                  (cdkDropListDropped)="drop($event)">
               @for (site of week.sunday.sites; track site.id) {
               <div class="site" cdkDrag (click)="toDetailPlanning(site.id, week.sunday.date)" >{{ site.name }}</div>

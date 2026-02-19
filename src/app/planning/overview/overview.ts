@@ -119,6 +119,14 @@ export class Overview {
     return ['unplanned', ...allDayIds];
   }
 
+  getConnectedListsExcludingPast(): string[] {
+    return this.getConnectedLists().filter(listId => !this.isPastDate(listId));
+  }
+
+  canDropPredicate = (drag: CdkDrag, drop: CdkDropList) => {
+    return !this.isPastDate(drop.id);
+  };
+
   drop(event: CdkDragDrop<SiteView[]>) {
     console.log(event);
     console.log(event.container.element.nativeElement.id)
