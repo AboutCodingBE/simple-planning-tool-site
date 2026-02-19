@@ -102,3 +102,13 @@ table {
   cursor: move;
   margin-bottom: 4px;
 }
+
+.day.passed {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+}
+
+.day.passed .site {
+  cursor: not-allowed;
+  color: #999;
+}

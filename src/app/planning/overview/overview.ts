@@ -65,6 +65,13 @@ export class Overview {
     this.untilDate.set(input.value);
   }
 
+  isPastDate(dateString: string): boolean {
+    const date = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  }
+
   getPlanning() {
       this.client.get<Planning>(`http://localhost:8080/planning?from=${this.fromDate()}&until=${this.untilDate()}`).subscribe(result => {
         console.log(result.weeks);

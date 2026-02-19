@@ -40,7 +40,7 @@
       @for (week of planningWeeks(); track week.week ) {
       <tr>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.monday.date)">
             <div class="date">{{ week.monday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -55,7 +55,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.tuesday.date)">
             <div class="date">{{ week.tuesday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -70,7 +70,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.wednesday.date)">
             <div class="date">{{ week.wednesday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -85,7 +85,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.thursday.date)">
             <div class="date">{{ week.thursday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -100,7 +100,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.friday.date)">
             <div class="date">{{ week.friday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -115,7 +115,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.saturday.date)">
             <div class="date">{{ week.saturday.date }}</div>
             <div class="planned-list"
                  cdkDropList
@@ -130,7 +130,7 @@
           </div>
         </td>
         <td>
-          <div class="day">
+          <div class="day" [class.passed]="isPastDate(week.sunday.date)">
             <div class="date">{{ week.sunday.date }}</div>
             <div class="planned-list"
                  cdkDropList
