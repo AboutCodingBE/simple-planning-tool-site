@@ -20,7 +20,7 @@ export class ChangeSite {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.http.get<SiteResponse>(`http://localhost:8080/sites/${id}`)
+    this.http.get<SiteResponse>(`/api/sites/${id}`)
       .subscribe(s => {
           this.site.set(s);
 
@@ -59,7 +59,7 @@ export class ChangeSite {
         transport: formValue.transport ?? null,
       };
 
-      this.http.put(`http://localhost:8080/sites/${this.site()?.id}`, request).subscribe({
+      this.http.put(`/sites/${this.site()?.id}`, request).subscribe({
         next: (response) => {
           console.log('Site updated successfully:', response);
           this.router.navigate(['/site-management/open-overview']);

@@ -29,7 +29,7 @@ export class DetailPlanning {
   }
 
   getSiteDetail() {
-    this.http.get<SiteDetail>(`http://localhost:8080/sites/${this.siteId}`)
+    this.http.get<SiteDetail>(`/api/sites/${this.siteId}`)
       .subscribe(result => {
         console.log(result);
         this.siteDetail.set(result);
@@ -38,7 +38,7 @@ export class DetailPlanning {
   }
 
   getIdleWorkers() {
-    this.http.get<IdleWorkers>(`http://localhost:8080/planning/idle?date=${this.planningDate}`)
+    this.http.get<IdleWorkers>(`/api/planning/idle?date=${this.planningDate}`)
       .subscribe(result => {
         console.log(result);
         this.idleWorkers.set(result.idle_workers);
@@ -63,7 +63,7 @@ export class DetailPlanning {
   }
 
   linkWorker(workerId: number) {
-    this.http.patch(`http://localhost:8080/planning/sites/${this.siteId}/workers?workerId=${workerId}`, null)
+    this.http.patch(`/api/planning/sites/${this.siteId}/workers?workerId=${workerId}`, null)
       .subscribe({
         next: (response) => {
           console.log(response);
@@ -92,7 +92,7 @@ export class DetailPlanning {
   }
 
   unlinkWorker(workerId: number) {
-    this.http.patch(`http://localhost:8080/planning/sites/${this.siteId}/unlink?workerId=${workerId}`, null)
+    this.http.patch(`/api/planning/sites/${this.siteId}/unlink?workerId=${workerId}`, null)
       .subscribe({
         next: (response) => {
           console.log(response);

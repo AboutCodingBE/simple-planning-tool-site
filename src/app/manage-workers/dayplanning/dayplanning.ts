@@ -35,7 +35,7 @@ export class Dayplanning {
     }
 
     fetchDataForDate() {
-      this.http.get<WorkerDayOverview>(`http://localhost:8080/planning/worker/day?date=${this.planningDate()}`)
+      this.http.get<WorkerDayOverview>(`/api/planning/worker/day?date=${this.planningDate()}`)
         .subscribe(result => {
           console.log(result);
           this.dayDetails.set(result.day_overview);

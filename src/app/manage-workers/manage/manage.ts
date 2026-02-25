@@ -30,7 +30,7 @@ export class Manage {
           last_name: workerValue.lastName!
         }
 
-        this.http.post('http://localhost:8080/workers', request).subscribe({
+        this.http.post('/api/workers', request).subscribe({
             next: (response) => {
               console.log(response);
               this.workerForm.reset();
@@ -44,14 +44,14 @@ export class Manage {
    }
 
    getAllWorkers() {
-     this.http.get<Worker[]>('http://localhost:8080/workers').subscribe( result => {
+     this.http.get<Worker[]>('/api/workers').subscribe( result => {
        console.log(result);
        this.workers.set(result);
      });
    }
 
    deleteWorker(workerId: number) {
-     this.http.delete(`http://localhost:8080/workers/${workerId}`)
+     this.http.delete(`/api/workers/${workerId}`)
       .subscribe({
         next: () => {
           console.log("worker with id ${workerId} deleted successfully");

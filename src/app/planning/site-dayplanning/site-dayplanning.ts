@@ -34,7 +34,7 @@ export class SiteDayplanning {
   }
 
   fetchDataForDate() {
-    this.http.get<DayOverview>(`http://localhost:8080/planning/day?date=${this.planningDate()}`)
+    this.http.get<DayOverview>(`/api/planning/day?date=${this.planningDate()}`)
       .subscribe(result => {
         console.log(result);
         this.plannedSites.set(result.plannedSites);

@@ -73,14 +73,14 @@ export class Overview {
   }
 
   getPlanning() {
-      this.client.get<Planning>(`http://localhost:8080/planning?from=${this.fromDate()}&until=${this.untilDate()}`).subscribe(result => {
+      this.client.get<Planning>(`/api/planning?from=${this.fromDate()}&until=${this.untilDate()}`).subscribe(result => {
         console.log(result.weeks);
         this.planningWeeks.set(result.weeks);
       });
   }
 
   getUnplannedSites() {
-    this.client.get<UnplannedSite[]>('http://localhost:8080/sites/unplanned')
+    this.client.get<UnplannedSite[]>('/api/sites/unplanned')
       .subscribe(result => {
         const siteViews: SiteView[] = result.map(site => ({
           id: site.id,
@@ -93,7 +93,7 @@ export class Overview {
   }
 
   planSite(siteId: number, executionDate: string) {
-    this.client.patch(`http://localhost:8080/planning/sites/${siteId}?date=${executionDate}`, null)
+    this.client.patch(`/api/planning/sites/${siteId}?date=${executionDate}`, null)
       .subscribe(result => {
         console.log('Updated:', result);
       });

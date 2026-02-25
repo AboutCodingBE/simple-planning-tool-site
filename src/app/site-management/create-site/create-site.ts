@@ -36,7 +36,7 @@ export class CreateSite {
         transport: formValue.transport ?? null,
        };
 
-       this.http.post('http://localhost:8080/sites', request).subscribe({
+       this.http.post('/api/sites', request).subscribe({
          next: (response) => {
            console.log('Site created successfully:', response);
            this.siteForm.reset();
