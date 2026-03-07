@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: planning-postgres
+    environment:
+      POSTGRES_DB: planning_tool
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d planning_tool"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - planning-network
+
+  backend:
+    image: ghcr.io/aboutcodingbe/simple-planning-tool:latest
+    container_name: planning-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/planning_tool
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - planning-network
+
+  frontend:
+    image: ghcr.io/aboutcodingbe/planning-frontend:latest
+    container_name: planning-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - planning-network
+
+networks:
+  planning-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
