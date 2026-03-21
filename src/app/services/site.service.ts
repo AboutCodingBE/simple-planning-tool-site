@@ -1,54 +1,70 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Site } from '../models/site.model';
 
-const MOCK_SITES: Site[] = [
-  {
-    id: 1, name: 'Renovatie Dijkstraat', customerName: 'Vermeersch NV',
-    isPrivateCustomer: false, desiredDate: '2026-04-01', durationInDays: 5,
-    transport: 'Bestelwagen', status: 'OPEN',
-  },
-  {
-    id: 2, name: 'Nieuwbouw Kerkplein', customerName: 'De Groote Familie',
-    isPrivateCustomer: true, desiredDate: '2026-04-15', durationInDays: 10,
-    transport: 'Vrachtwagen', status: 'OPEN',
-  },
-  {
-    id: 3, name: 'Dakwerken Stationsweg', customerName: 'Gemeente Aalst',
-    isPrivateCustomer: false, desiredDate: '2026-03-28', durationInDays: 3,
-    transport: 'Bestelwagen', status: 'OPEN',
-  },
-  {
-    id: 4, name: 'Verbouwing Handelspand', customerName: 'Bakkerij Janssen',
-    isPrivateCustomer: true, desiredDate: '2026-05-01', durationInDays: 7,
-    transport: null, status: 'OPEN',
-  },
-  {
-    id: 5, name: 'Betonwerken Industriepark', customerName: 'LogiPark BVBA',
-    isPrivateCustomer: false, desiredDate: '2026-04-20', durationInDays: 14,
-    transport: 'Vrachtwagen', status: 'OPEN',
-  },
-  {
-    id: 6, name: 'Gevelrenovatie Marktplein', customerName: 'Stad Gent',
-    isPrivateCustomer: false, desiredDate: '2026-03-25', durationInDays: 4,
-    transport: 'Bestelwagen', status: 'OPEN',
-  },
-  {
-    id: 7, name: 'Terrasaanleg Tuinwijk', customerName: 'Peters Patrick',
-    isPrivateCustomer: true, desiredDate: '2026-04-10', durationInDays: 2,
-    transport: null, status: 'OPEN',
-  },
-  {
-    id: 8, name: 'Rioleringswerken Molenstraat', customerName: 'Aquafin NV',
-    isPrivateCustomer: false, desiredDate: '2026-05-15', durationInDays: 20,
-    transport: 'Vrachtwagen', status: 'OPEN',
-  },
-];
+// ── API response shapes ───────────────────────────────────────────────────────
+
+interface CustomerResponse {
+  id: number;
+  customer_name: string;
+  is_private_customer: boolean;
+}
+
+interface SiteResponse {
+  id: number;
+  name: string;
+  customer: CustomerResponse | null;
+  desired_date: string | null;
+  planned_date: string | null;
+  duration_in_days: number | null;
+  status: string;
+  transport: string | null;
+}
+
+interface CreateSiteRequest {
+  name: string;
+  customer_name: string;
+  is_private_customer: boolean;
+  desired_date: string | null;
+  duration_in_days: number | null;
+  transport: string | null;
+}
+
+interface UpdateSiteRequest extends CreateSiteRequest {}
+
+// ── Mapper ────────────────────────────────────────────────────────────────────
+
+function toSite(r: SiteResponse): Site {
+  return {
+    id: r.id,
+    name: r.name,
+    customerName: r.customer?.customer_name ?? '',
+    isPrivateCustomer: r.customer?.is_private_customer ?? false,
+    desiredDate: r.desired_date,
+    durationInDays: r.duration_in_days,
+    transport: r.transport,
+    status: r.status as Site['status'],
+  };
+}
+
+// ── Service ───────────────────────────────────────────────────────────────────
 
 @Injectable({ providedIn: 'root' })
 export class SiteService {
-  private sitesSubject = new BehaviorSubject<Site[]>(MOCK_SITES);
-  private nextId = MOCK_SITES.length + 1;
+  private http = inject(HttpClient);
+  private sitesSubject = new BehaviorSubject<Site[]>([]);
+
+  constructor() {
+    this.refresh();
+  }
+
+  private refresh(): void {
+    this.http.get<SiteResponse[]>('/api/sites/open').pipe(
+      map(sites => sites.map(toSite)),
+    ).subscribe(sites => this.sitesSubject.next(sites));
+  }
 
   getSites(): Observable<Site[]> {
     return this.sitesSubject.asObservable();
@@ -59,14 +75,34 @@ export class SiteService {
   }
 
   addSite(site: Omit<Site, 'id'>): Observable<Site> {
-    const newSite: Site = { ...site, id: this.nextId++ };
-    this.sitesSubject.next([...this.sitesSubject.value, newSite]);
-    return of(newSite);
+    const body: CreateSiteRequest = {
+      name: site.name,
+      customer_name: site.customerName,
+      is_private_customer: site.isPrivateCustomer,
+      desired_date: site.desiredDate,
+      duration_in_days: site.durationInDays,
+      transport: site.transport,
+    };
+    return this.http.post<SiteResponse>('/api/sites', body).pipe(
+      map(toSite),
+      tap(newSite => this.sitesSubject.next([...this.sitesSubject.value, newSite])),
+    );
   }
 
   updateSite(site: Site): Observable<Site> {
-    const updated = this.sitesSubject.value.map(s => s.id === site.id ? site : s);
-    this.sitesSubject.next(updated);
-    return of(site);
+    const body: UpdateSiteRequest = {
+      name: site.name,
+      customer_name: site.customerName,
+      is_private_customer: site.isPrivateCustomer,
+      desired_date: site.desiredDate,
+      duration_in_days: site.durationInDays,
+      transport: site.transport,
+    };
+    return this.http.put<SiteResponse>(`/api/sites/${site.id}`, body).pipe(
+      map(toSite),
+      tap(updated => this.sitesSubject.next(
+        this.sitesSubject.value.map(s => s.id === updated.id ? updated : s),
+      )),
+    );
   }
 }
