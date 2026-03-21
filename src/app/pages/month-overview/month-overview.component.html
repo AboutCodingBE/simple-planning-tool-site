@@ -1,0 +1,34 @@
+<div class="mo-content">
+  <div class="months-column">
+    @for (month of months(); track month.key) {
+      <div class="month-card">
+        <div class="month-card-header">{{ month.name }} {{ month.year }}</div>
+        @for (week of month.weeks; track week.weekKey) {
+          <div class="week-row">
+            <div class="week-number">W{{ week.weekNumber }}</div>
+            @for (slot of week.slots; track $index; let i = $index) {
+              <app-drop-slot
+                [items]="slot"
+                [maxItems]="5"
+                (itemDropped)="onSiteDropped($event, week.weekNumber, week.year, i)"
+                (itemRemoved)="onSiteRemoved(week.weekNumber, week.year, i, $event)">
+              </app-drop-slot>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="sites-panel">
+    <div class="sites-panel-header">Werven</div>
+    <div class="sites-list">
+      @for (site of allSites(); track site.id) {
+        <app-site-tag [site]="site" [removable]="false"></app-site-tag>
+      }
+      @if (allSites().length === 0) {
+        <p class="empty-hint">Geen werven beschikbaar</p>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+@if (isOpen && worker) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal" role="dialog">
+      <div class="modal-header green">Werker bewerken</div>
+
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <div class="modal-body">
+          <div class="modal-row">
+            <div class="modal-field">
+              <label>Voornaam <span class="req">*</span></label>
+              <input type="text" formControlName="firstName" placeholder="Voornaam" />
+            </div>
+            <div class="modal-field">
+              <label>Familienaam <span class="req">*</span></label>
+              <input type="text" formControlName="lastName" placeholder="Familienaam" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="modal-btn modal-btn-cancel" (click)="cancel.emit()">
+            Annuleren
+          </button>
+          <button type="submit" class="modal-btn modal-btn-save green" [disabled]="form.invalid">
+            Opslaan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

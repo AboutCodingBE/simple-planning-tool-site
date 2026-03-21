@@ -1,0 +1,155 @@
+<div class="bh-content">
+
+  <!-- Sites panel -->
+  <div class="bh-panel">
+    <div class="bh-panel-header">
+      Werven
+      <span class="bh-count">{{ sites().length }}</span>
+    </div>
+
+    <form class="bh-form-full" [formGroup]="siteForm" (ngSubmit)="onAddSite()">
+      <div class="bh-form-row">
+        <div class="bh-field bh-field-half">
+          <label class="bh-label">Werf naam <span class="bh-required">*</span></label>
+          <input class="bh-input" type="text" formControlName="name" placeholder="Naam werf" />
+        </div>
+        <div class="bh-field bh-field-half">
+          <label class="bh-label">Klant naam <span class="bh-required">*</span></label>
+          <input class="bh-input" type="text" formControlName="customerName" placeholder="Naam klant" />
+        </div>
+      </div>
+      <div class="bh-form-row">
+        <div class="bh-field bh-field-third">
+          <label class="bh-label">Gewenste uitvoeringsdatum</label>
+          <input class="bh-input" type="date" formControlName="desiredDate" />
+        </div>
+        <div class="bh-field bh-field-third">
+          <label class="bh-label">Duur (Dagen)</label>
+          <input class="bh-input" type="number" formControlName="durationInDays" min="1" placeholder="0" />
+        </div>
+        <div class="bh-field bh-field-third">
+          <label class="bh-label">Transport</label>
+          <input class="bh-input" type="text" formControlName="transport" placeholder="Bestelwagen…" />
+        </div>
+      </div>
+      <div class="bh-form-row-footer">
+        <label class="bh-checkbox-label">
+          <input type="checkbox" formControlName="isPrivateCustomer" />
+          Privé klant?
+        </label>
+        <button class="bh-add-btn" type="submit" [disabled]="siteForm.invalid">
+          + Werf toevoegen
+        </button>
+      </div>
+    </form>
+
+    <div class="bh-table-wrap">
+      <table class="bh-table">
+        <thead>
+          <tr>
+            <th>Naam</th>
+            <th>Klant</th>
+            <th>Datum</th>
+            <th>Dagen</th>
+            <th>Transport</th>
+            <th class="bh-col-privat">Privé</th>
+            <th class="bh-col-action">Acties</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (site of sites(); track site.id) {
+            <tr>
+              <td>{{ site.name }}</td>
+              <td>{{ site.customerName }}</td>
+              <td>{{ site.desiredDate ?? '—' }}</td>
+              <td>{{ site.durationInDays ?? '—' }}</td>
+              <td>{{ site.transport ?? '—' }}</td>
+              <td class="bh-col-privat">{{ site.isPrivateCustomer ? '✓' : '' }}</td>
+              <td class="bh-col-action">
+                <div class="bh-action-btns">
+                  <button class="bh-edit-btn" type="button" title="Bewerken"
+                          (click)="openSiteModal(site)">✎</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (sites().length === 0) {
+            <tr><td colspan="7" class="bh-empty">Geen werven gevonden</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Workers panel -->
+  <div class="bh-panel">
+    <div class="bh-panel-header">
+      Werkers
+      <span class="bh-count">{{ workers().length }}</span>
+    </div>
+
+    <form class="bh-form-full" [formGroup]="workerForm" (ngSubmit)="onAddWorker()">
+      <div class="bh-form-row">
+        <div class="bh-field bh-field-half">
+          <label class="bh-label">Voornaam <span class="bh-required">*</span></label>
+          <input class="bh-input" type="text" formControlName="firstName" placeholder="Voornaam" />
+        </div>
+        <div class="bh-field bh-field-half">
+          <label class="bh-label">Familienaam <span class="bh-required">*</span></label>
+          <input class="bh-input" type="text" formControlName="lastName" placeholder="Familienaam" />
+        </div>
+      </div>
+      <div class="bh-form-row-footer">
+        <span></span>
+        <button class="bh-add-btn bh-add-btn-green" type="submit" [disabled]="workerForm.invalid">
+          + Werker toevoegen
+        </button>
+      </div>
+    </form>
+
+    <div class="bh-table-wrap">
+      <table class="bh-table">
+        <thead>
+          <tr>
+            <th>Voornaam</th>
+            <th>Familienaam</th>
+            <th class="bh-col-action">Acties</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (worker of workers(); track worker.id) {
+            <tr>
+              <td>{{ worker.firstName }}</td>
+              <td>{{ worker.lastName }}</td>
+              <td class="bh-col-action">
+                <div class="bh-action-btns">
+                  <button class="bh-edit-btn" type="button" title="Bewerken"
+                          (click)="openWorkerModal(worker)">✎</button>
+                  <button class="bh-delete-btn" type="button" title="Verwijderen"
+                          (click)="deleteWorker(worker.id)">×</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (workers().length === 0) {
+            <tr><td colspan="3" class="bh-empty">Geen werkers gevonden</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<app-site-edit-modal
+  [site]="editingSite()"
+  [isOpen]="siteModalOpen()"
+  (save)="onSiteSave($event)"
+  (cancel)="closeSiteModal()">
+</app-site-edit-modal>
+
+<app-worker-edit-modal
+  [worker]="editingWorker()"
+  [isOpen]="workerModalOpen()"
+  (save)="onWorkerSave($event)"
+  (cancel)="closeWorkerModal()">
+</app-worker-edit-modal>

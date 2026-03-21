@@ -1,0 +1,126 @@
+.mo-content {
+  flex: 1;
+  display: flex;
+  padding: 0 36px 36px;
+  gap: 20px;
+  overflow: hidden;
+}
+
+.months-column {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+}
+
+.month-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+  animation: fadeIn 0.35s ease both;
+}
+
+.month-card:nth-child(2) { animation-delay: 0.07s; }
+.month-card:nth-child(3) { animation-delay: 0.14s; }
+.month-card:hover { box-shadow: var(--shadow-md); }
+
+.month-card-header {
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(to right, var(--blue-50), transparent);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-card-header::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: var(--blue-500);
+  border-radius: 2px;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  gap: 6px;
+  padding: 7px 16px;
+  border-bottom: 1px solid var(--border-light);
+  align-items: start;
+  min-height: 42px;
+  transition: background 0.1s;
+}
+
+.week-row:last-child { border-bottom: none; }
+.week-row:hover { background: #fafcff; }
+
+.week-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  padding-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sites-panel {
+  width: 190px;
+  min-width: 190px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.sites-panel-header {
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(to right, var(--blue-50), transparent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sites-panel-header::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: var(--blue-500);
+  border-radius: 2px;
+}
+
+.sites-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empty-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+  padding: 16px 0;
+}

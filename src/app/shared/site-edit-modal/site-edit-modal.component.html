@@ -1,0 +1,51 @@
+@if (isOpen && site) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal" role="dialog">
+      <div class="modal-header">Werf bewerken</div>
+
+      <form [formGroup]="form" (ngSubmit)="onSave()">
+        <div class="modal-body">
+          <div class="modal-field">
+            <label>Werf naam <span class="req">*</span></label>
+            <input type="text" formControlName="name" placeholder="Naam van de werf" />
+          </div>
+
+          <div class="modal-field">
+            <label>Klant naam <span class="req">*</span></label>
+            <input type="text" formControlName="customerName" placeholder="Naam van de klant" />
+          </div>
+
+          <div class="modal-row">
+            <div class="modal-field">
+              <label>Gewenste uitvoeringsdatum</label>
+              <input type="date" formControlName="desiredDate" />
+            </div>
+            <div class="modal-field">
+              <label>Duur (Dagen)</label>
+              <input type="number" formControlName="durationInDays" min="1" placeholder="0" />
+            </div>
+          </div>
+
+          <div class="modal-field">
+            <label>Transport</label>
+            <input type="text" formControlName="transport" placeholder="bv. Bestelwagen" />
+          </div>
+
+          <label class="modal-checkbox">
+            <input type="checkbox" formControlName="isPrivateCustomer" />
+            Privé klant
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="modal-btn modal-btn-cancel" (click)="cancel.emit()">
+            Annuleren
+          </button>
+          <button type="submit" class="modal-btn modal-btn-save" [disabled]="form.invalid">
+            Opslaan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

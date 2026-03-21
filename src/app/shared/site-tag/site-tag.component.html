@@ -1,0 +1,8 @@
+<div class="site-tag"
+     draggable="true"
+     (dragstart)="onDragStart($event)">
+  {{ site.name }}
+  @if (removable) {
+    <button class="site-tag-remove" (click)="onRemove($event)">×</button>
+  }
+</div>

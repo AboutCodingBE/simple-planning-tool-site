@@ -1,0 +1,57 @@
+<div class="do-toolbar">
+  <label>Van</label>
+  <input type="date" [value]="fromDate()" (change)="onFromChange($event)" />
+  <label>Tot</label>
+  <input type="date" [value]="untilDate()" (change)="onUntilChange($event)" />
+</div>
+
+<div class="do-content">
+  @for (week of weekBlocks(); track week.weekNumber + '-' + week.year) {
+    <div class="do-week-label">
+      <span>Week {{ week.weekNumber }}</span>
+    </div>
+    <div class="do-week-block">
+      <div class="do-days-col">
+        <div class="do-days-header">
+          @for (label of dayLabels; track label) {
+            <div class="do-day-header">{{ label }}</div>
+          }
+        </div>
+        <div class="do-days-grid">
+          @for (day of week.days; track day.dateStr) {
+            <div class="do-day-card"
+                 [class.today]="day.isToday"
+                 [class.outside]="!day.isInRange"
+                 [class.drag-over]="day.dragOver"
+                 (dragover)="onDayDragOver($event, day)"
+                 (dragleave)="onDayDragLeave(day)"
+                 (drop)="onDayDrop($event, day)">
+              <div class="do-day-date">{{ day.date.getDate() }}</div>
+              <div class="do-day-items">
+                @for (site of day.sites; track site.id) {
+                  <app-site-tag
+                    [site]="site"
+                    [removable]="true"
+                    (remove)="removeSiteFromDay(day.dateStr, $event.id)">
+                  </app-site-tag>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="do-week-sidebar">
+        <div class="do-week-sidebar-header">Week {{ week.weekNumber }}</div>
+        <div class="do-week-sidebar-items">
+          @for (site of week.weekSites; track site.id) {
+            <app-site-tag [site]="site" [removable]="false"></app-site-tag>
+          }
+          @if (week.weekSites.length === 0) {
+            <p class="do-week-sidebar-empty">Geen werven gepland</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

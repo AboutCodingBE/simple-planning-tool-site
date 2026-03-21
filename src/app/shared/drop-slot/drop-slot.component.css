@@ -1,0 +1,26 @@
+.drop-slot {
+  min-height: 30px;
+  background: var(--slot-bg);
+  border: 1.5px dashed var(--slot-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 3px;
+  font-size: 11px;
+  color: #bbb;
+  transition: all 0.15s ease;
+}
+
+.drop-slot:hover {
+  border-color: var(--blue-200);
+  background: var(--blue-50);
+}
+
+.drop-slot.drag-over {
+  background: var(--slot-hover);
+  border-color: var(--slot-hover-border);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}

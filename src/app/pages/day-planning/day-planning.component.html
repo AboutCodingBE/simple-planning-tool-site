@@ -1,0 +1,48 @@
+<div class="dp-toolbar">
+  <label>Datum</label>
+  <input type="date" [value]="selectedDate()" (change)="onDateChange($event)" />
+</div>
+
+<div class="dp-content">
+  <div class="dp-sites-grid">
+    @for (site of dayPlan().sites; track site.id) {
+      <div class="dp-site-card">
+        <div class="dp-site-card-header">{{ site.name }}</div>
+        <div class="dp-workers-drop"
+             [class.drag-over]="isDragOverSite(site.id)"
+             (dragover)="onWorkerDragOver($event, site.id)"
+             (dragleave)="onWorkerDragLeave(site.id)"
+             (drop)="onWorkerDrop($event, site)">
+          @for (worker of getWorkersForSite(site.id); track worker.id) {
+            <app-worker-tag
+              [worker]="worker"
+              [removable]="true"
+              (remove)="removeWorker(site.id, $event.id)">
+            </app-worker-tag>
+          }
+          @if (getWorkersForSite(site.id).length === 0) {
+            <p class="dp-empty-hint">Sleep een werker hiernaartoe</p>
+          }
+        </div>
+      </div>
+    }
+
+    @if (dayPlan().sites.length === 0) {
+      <div class="dp-no-sites">
+        <p>Geen werven gepland voor deze dag.</p>
+        <button class="dp-plan-btn" (click)="goToMonthOverview()">
+          Plan een werf
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="dp-workers-panel">
+    <div class="dp-workers-header">Werkers</div>
+    <div class="dp-workers-list">
+      @for (worker of allWorkers(); track worker.id) {
+        <app-worker-tag [worker]="worker" [removable]="false"></app-worker-tag>
+      }
+    </div>
+  </div>
+</div>

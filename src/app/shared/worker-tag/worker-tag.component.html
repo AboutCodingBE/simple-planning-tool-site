@@ -1,0 +1,8 @@
+<div class="worker-tag"
+     draggable="true"
+     (dragstart)="onDragStart($event)">
+  {{ worker.firstName }} {{ worker.lastName }}
+  @if (removable) {
+    <button class="worker-tag-remove" (click)="onRemove($event)">×</button>
+  }
+</div>

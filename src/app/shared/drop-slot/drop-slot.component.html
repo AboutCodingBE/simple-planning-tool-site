@@ -1,0 +1,13 @@
+<div class="drop-slot"
+     [class.drag-over]="isDragOver"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave()"
+     (drop)="onDrop($event)">
+  @for (site of items; track site.id) {
+    <app-site-tag
+      [site]="site"
+      [removable]="true"
+      (remove)="itemRemoved.emit($event.id)">
+    </app-site-tag>
+  }
+</div>
