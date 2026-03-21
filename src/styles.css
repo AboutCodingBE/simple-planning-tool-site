@@ -1,30 +1,76 @@
-html,body{
-	height:100%;
-    height: 100vp;
-	background-color:#CCCCCC;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sidebar-w: 220px;
+  --sb-bg: #1a2234;
+  --sb-bg-hover: #232f45;
+  --sb-bg-active: #2a3a56;
+  --sb-text: #8896ad;
+  --sb-text-active: #e4eaf5;
+  --sb-divider: #2a3650;
+  --sb-accent: #4d8df7;
+
+  --bg: #f0f4f8;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-400: #60a5fa;
+  --blue-500: #4d8df7;
+  --blue-600: #2563eb;
+
+  --slot-bg: #f8fafc;
+  --slot-border: #e2e8f0;
+  --slot-hover: #dbeafe;
+  --slot-hover-border: #60a5fa;
+
+  --tag-bg: #eff6ff;
+  --tag-border: #bfdbfe;
+  --tag-text: #1e40af;
+
+  --worker-tag-bg: #f0fdf4;
+  --worker-tag-border: #bbf7d0;
+  --worker-tag-text: #166534;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
-body, div,
-h1, h2, h3, h4, h5, h6,
- blockquote, pre, dl, dt, dd, ol, ul, li, hr,
-fieldset, form, label, legend, th, td,
-article, aside, figure, footer, header, hgroup, menu, nav, section,
-summary, hgroup {
-  margin: 0;
-  padding: 0;
-  border: 0;
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
-ol{
-	list-style-type:none;
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
 }
 
-/*
-a:link,
-a:visited,
-a:active,
-a:hover {
-  outline: 0;
-  text-decoration:none;
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-*/
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}

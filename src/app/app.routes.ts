@@ -1,36 +1,13 @@
 import { Routes } from '@angular/router';
-import { PlanningOverview } from './planning/planning-overview'
-import { Overview } from './planning/overview/overview'
-import { DetailPlanning } from './planning/detail-planning/detail-planning'
-import { SiteDayplanning } from './planning/site-dayplanning/site-dayplanning'
-import { SiteManagement } from './site-management/site-management'
-import { OpenSiteOverview } from './site-management/open-site-overview/open-site-overview'
-import { CreateSite } from './site-management/create-site/create-site'
-import { ChangeSite } from './site-management/change-site/change-site'
-import { ManageWorkers } from './manage-workers/manage-workers'
-import { Manage } from './manage-workers/manage/manage'
-import { Dayplanning } from './manage-workers/dayplanning/dayplanning'
+import { MonthOverviewComponent } from './pages/month-overview/month-overview.component';
+import { DetailOverviewComponent } from './pages/detail-overview/detail-overview.component';
+import { DayPlanningComponent } from './pages/day-planning/day-planning.component';
+import { ManagementComponent } from './pages/management/management.component';
 
 export const routes: Routes = [
-  {path: '', redirectTo: '/planning-overview', pathMatch: 'full'},
-  {path: 'planning-overview', component: PlanningOverview,
-    children: [
-        { path: '', redirectTo: 'overview', pathMatch: 'full' },
-        { path: 'overview', component:Overview },
-        { path: 'sitedayplanning', component: SiteDayplanning }
-      ]},
-  {path: 'detail-planning/:id/:date', component: DetailPlanning},
-  {path: 'site-management', component: SiteManagement,
-    children: [
-        { path: '', redirectTo: 'open-overview', pathMatch: 'full' },
-        { path: 'open-overview', component: OpenSiteOverview },
-        { path: 'createSite', component: CreateSite },
-        { path: 'changeSite/:id', component: ChangeSite },
-      ]},
-  {path: 'worker-management', component: ManageWorkers,
-    children: [
-        {path: '', redirectTo: 'dayplanning', pathMatch: 'full'},
-        {path: 'dayplanning', component: Dayplanning },
-        {path: 'manage-workers', component: Manage },
-      ]}
- ];
+  { path: '', redirectTo: 'month-overview', pathMatch: 'full' },
+  { path: 'month-overview', component: MonthOverviewComponent },
+  { path: 'detail-overview', component: DetailOverviewComponent },
+  { path: 'day-planning', component: DayPlanningComponent },
+  { path: 'management', component: ManagementComponent },
+];

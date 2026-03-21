@@ -1,0 +1,218 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Site } from '../models/site.model';
+import { Worker } from '../models/worker.model';
+import { WeekPlan, DayPlan } from '../models/planning.model';
+
+// Helpers ─────────────────────────────────────────────────────────────────────
+
+function isoWeekNumber(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+}
+
+function isoWeekYear(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  return d.getUTCFullYear();
+}
+
+function emptySlots(): Site[][] {
+  return [[], [], [], [], []];
+}
+
+// Mock seed data ──────────────────────────────────────────────────────────────
+
+const S1: Site = {
+  id: 1, name: 'Renovatie Dijkstraat', customerName: 'Vermeersch NV',
+  isPrivateCustomer: false, desiredDate: '2026-04-01', durationInDays: 5,
+  transport: 'Bestelwagen', status: 'OPEN',
+};
+const S2: Site = {
+  id: 2, name: 'Nieuwbouw Kerkplein', customerName: 'De Groote Familie',
+  isPrivateCustomer: true, desiredDate: '2026-04-15', durationInDays: 10,
+  transport: 'Vrachtwagen', status: 'OPEN',
+};
+const S3: Site = {
+  id: 3, name: 'Dakwerken Stationsweg', customerName: 'Gemeente Aalst',
+  isPrivateCustomer: false, desiredDate: '2026-03-28', durationInDays: 3,
+  transport: 'Bestelwagen', status: 'OPEN',
+};
+const S4: Site = {
+  id: 4, name: 'Verbouwing Handelspand', customerName: 'Bakkerij Janssen',
+  isPrivateCustomer: true, desiredDate: '2026-05-01', durationInDays: 7,
+  transport: null, status: 'OPEN',
+};
+
+const W1: Worker = { id: 1, firstName: 'Luc', lastName: 'Vermeersch' };
+const W2: Worker = { id: 2, firstName: 'Joris', lastName: 'De Smedt' };
+const W3: Worker = { id: 3, firstName: 'Pieter', lastName: 'Van den Berg' };
+
+function buildSeedWeekPlans(): WeekPlan[] {
+  const today = new Date();
+  const wn = isoWeekNumber(today);
+  const wy = isoWeekYear(today);
+
+  const nextWeekDate = new Date(today);
+  nextWeekDate.setDate(today.getDate() + 7);
+  const wn2 = isoWeekNumber(nextWeekDate);
+  const wy2 = isoWeekYear(nextWeekDate);
+
+  const slots1 = emptySlots();
+  slots1[0] = [S1, S2];
+  slots1[1] = [S3];
+
+  const slots2 = emptySlots();
+  slots2[0] = [S4];
+  slots2[2] = [S1];
+
+  return [
+    { weekNumber: wn, year: wy, slots: slots1 },
+    { weekNumber: wn2, year: wy2, slots: slots2 },
+  ];
+}
+
+function buildSeedDayPlans(): DayPlan[] {
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+  return [
+    {
+      date: today,
+      sites: [S1, S3],
+      workerAssignments: {
+        [S1.id]: [W1, W2],
+        [S3.id]: [W3],
+      },
+    },
+    {
+      date: tomorrow,
+      sites: [S2],
+      workerAssignments: {},
+    },
+  ];
+}
+
+// Service ─────────────────────────────────────────────────────────────────────
+
+@Injectable({ providedIn: 'root' })
+export class PlanningService {
+  private weekPlansSubject = new BehaviorSubject<WeekPlan[]>(buildSeedWeekPlans());
+  private dayPlansSubject = new BehaviorSubject<DayPlan[]>(buildSeedDayPlans());
+
+  // ── Week plans ──────────────────────────────────────────────────────────────
+
+  getWeekPlans(): Observable<WeekPlan[]> {
+    return this.weekPlansSubject.asObservable();
+  }
+
+  assignSiteToWeek(weekNumber: number, year: number, slotIndex: number, site: Site): void {
+    const plans = this.weekPlansSubject.value;
+    const existing = plans.find(p => p.weekNumber === weekNumber && p.year === year);
+
+    if (existing) {
+      const slot = existing.slots[slotIndex];
+      if (slot.length >= 5 || slot.some(s => s.id === site.id)) return;
+      const updatedSlots = existing.slots.map((s, i) =>
+        i === slotIndex ? [...s, site] : s,
+      );
+      this.weekPlansSubject.next(
+        plans.map(p =>
+          p.weekNumber === weekNumber && p.year === year
+            ? { ...p, slots: updatedSlots }
+            : p,
+        ),
+      );
+    } else {
+      const slots = emptySlots();
+      slots[slotIndex] = [site];
+      this.weekPlansSubject.next([...plans, { weekNumber, year, slots }]);
+    }
+  }
+
+  removeSiteFromWeek(weekNumber: number, year: number, slotIndex: number, siteId: number): void {
+    const plans = this.weekPlansSubject.value;
+    this.weekPlansSubject.next(
+      plans.map(p => {
+        if (p.weekNumber !== weekNumber || p.year !== year) return p;
+        const updatedSlots = p.slots.map((s, i) =>
+          i === slotIndex ? s.filter(site => site.id !== siteId) : s,
+        );
+        return { ...p, slots: updatedSlots };
+      }),
+    );
+  }
+
+  // ── Day plans ───────────────────────────────────────────────────────────────
+
+  getDayPlans(): Observable<DayPlan[]> {
+    return this.dayPlansSubject.asObservable();
+  }
+
+  assignSiteToDay(date: string, site: Site): void {
+    const plans = this.dayPlansSubject.value;
+    const existing = plans.find(p => p.date === date);
+
+    if (existing) {
+      if (existing.sites.some(s => s.id === site.id)) return;
+      this.dayPlansSubject.next(
+        plans.map(p =>
+          p.date === date ? { ...p, sites: [...p.sites, site] } : p,
+        ),
+      );
+    } else {
+      this.dayPlansSubject.next([...plans, { date, sites: [site], workerAssignments: {} }]);
+    }
+  }
+
+  removeSiteFromDay(date: string, siteId: number): void {
+    const plans = this.dayPlansSubject.value;
+    this.dayPlansSubject.next(
+      plans.map(p => {
+        if (p.date !== date) return p;
+        const assignments = { ...p.workerAssignments };
+        delete assignments[siteId];
+        return { ...p, sites: p.sites.filter(s => s.id !== siteId), workerAssignments: assignments };
+      }),
+    );
+  }
+
+  assignWorkerToSite(date: string, siteId: number, worker: Worker): void {
+    const plans = this.dayPlansSubject.value;
+    const existing = plans.find(p => p.date === date);
+
+    if (existing) {
+      const current = existing.workerAssignments[siteId] ?? [];
+      if (current.some(w => w.id === worker.id)) return;
+      const updated = {
+        ...existing,
+        workerAssignments: {
+          ...existing.workerAssignments,
+          [siteId]: [...current, worker],
+        },
+      };
+      this.dayPlansSubject.next(plans.map(p => p.date === date ? updated : p));
+    }
+  }
+
+  removeWorkerFromSite(date: string, siteId: number, workerId: number): void {
+    const plans = this.dayPlansSubject.value;
+    this.dayPlansSubject.next(
+      plans.map(p => {
+        if (p.date !== date) return p;
+        const current = p.workerAssignments[siteId] ?? [];
+        return {
+          ...p,
+          workerAssignments: {
+            ...p.workerAssignments,
+            [siteId]: current.filter(w => w.id !== workerId),
+          },
+        };
+      }),
+    );
+  }
+}

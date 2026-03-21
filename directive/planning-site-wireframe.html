@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planning Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --sidebar-w: 220px;
+      --sb-bg: #1a2234;
+      --sb-bg-hover: #232f45;
+      --sb-bg-active: #2a3a56;
+      --sb-text: #8896ad;
+      --sb-text-active: #e4eaf5;
+      --sb-divider: #2a3650;
+      --sb-accent: #4d8df7;
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --blue-50: #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-200: #bfdbfe;
+      --blue-400: #60a5fa;
+      --blue-500: #4d8df7;
+      --blue-600: #2563eb;
+      --slot-bg: #f8fafc;
+      --slot-border: #e2e8f0;
+      --slot-hover: #dbeafe;
+      --slot-hover-border: #60a5fa;
+      --tag-bg: #eff6ff;
+      --tag-border: #bfdbfe;
+      --tag-text: #1e40af;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--sb-bg);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(77, 141, 247, 0.35);
+    }
+
+    .sidebar-logo-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sidebar-logo-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--sb-text-active);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .sidebar-logo-text span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--sb-text);
+      margin-top: 1px;
+      letter-spacing: 0;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--sb-divider);
+      margin: 0 20px 8px;
+    }
+
+    .sidebar-nav {
+      padding: 4px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-nav button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 400;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--sb-text);
+      font-family: inherit;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      letter-spacing: -0.1px;
+    }
+
+    .sidebar-nav button:hover {
+      background: var(--sb-bg-hover);
+      color: var(--sb-text-active);
+    }
+
+    .sidebar-nav button.active {
+      background: var(--sb-bg-active);
+      color: var(--sb-text-active);
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--sb-accent);
+    }
+
+    /* ── Main content ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .page-header {
+      padding: 24px 36px 20px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ── Page containers ── */
+    .page { display: none; flex: 1; overflow: hidden; }
+    .page.active { display: flex; flex-direction: column; }
+
+    /* ══════════════════════════════════════════
+       PAGE: Maand Overzicht
+       ══════════════════════════════════════════ */
+
+    .mo-content {
+      flex: 1;
+      display: flex;
+      padding: 0 36px 36px;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .months-column {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-right: 4px;
+      padding-bottom: 4px;
+    }
+
+    .month-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .month-card:hover { box-shadow: var(--shadow-md); }
+
+    .month-card-header {
+      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, var(--blue-50), transparent);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .month-card-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--blue-500);
+      border-radius: 2px;
+    }
+
+    .week-row {
+      display: grid;
+      grid-template-columns: 48px repeat(5, 1fr);
+      gap: 6px;
+      padding: 7px 16px;
+      border-bottom: 1px solid var(--border-light);
+      align-items: start;
+      min-height: 42px;
+      transition: background 0.1s;
+    }
+
+    .week-row:last-child { border-bottom: none; }
+    .week-row:hover { background: #fafcff; }
+
+    .week-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+      padding-top: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .drop-slot {
+      min-height: 30px;
+      background: var(--slot-bg);
+      border: 1.5px dashed var(--slot-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 3px;
+      padding: 3px;
+      font-size: 11px;
+      color: #bbb;
+      transition: all 0.15s ease;
+    }
+
+    .drop-slot:hover {
+      border-color: var(--blue-200);
+      background: var(--blue-50);
+    }
+
+    .drop-slot.drag-over {
+      background: var(--slot-hover);
+      border-color: var(--slot-hover-border);
+      border-style: solid;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    }
+
+    .drop-slot .site-tag {
+      width: 100%;
+      text-align: center;
+      position: relative;
+      padding-right: 22px;
+    }
+
+    .site-tag-remove {
+      position: absolute;
+      right: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 16px;
+      cursor: pointer;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+      transition: all 0.15s ease;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .site-tag-remove:hover {
+      opacity: 1;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .site-tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--tag-text);
+      cursor: grab;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.15s ease;
+    }
+
+    .site-tag:hover {
+      background: var(--blue-100);
+      border-color: var(--blue-400);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .site-tag:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+      box-shadow: var(--shadow-md);
+    }
+
+    .sites-panel {
+      width: 190px;
+      min-width: 190px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sites-panel-header {
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, var(--blue-50), transparent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sites-panel-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--blue-500);
+      border-radius: 2px;
+    }
+
+    .sites-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sites-list .site-tag {
+      text-align: center;
+      padding: 7px 10px;
+    }
+
+    /* ══════════════════════════════════════════
+       PAGE: Detail Overzicht
+       ══════════════════════════════════════════ */
+
+    .do-toolbar {
+      padding: 0 36px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .do-toolbar label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .do-toolbar input[type="date"] {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .do-toolbar input[type="date"]:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+    }
+
+    .do-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 36px 36px;
+    }
+
+    .do-week-block {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .do-days-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .do-day-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      padding-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .do-day-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .do-day-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .do-day-card.drag-over {
+      border-color: var(--blue-400);
+      background: var(--blue-50);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    }
+
+    .do-day-card.today {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+    }
+
+    .do-day-card.outside {
+      opacity: 0.4;
+    }
+
+    .do-day-date {
+      padding: 8px 10px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .do-day-card.today .do-day-date {
+      color: var(--blue-500);
+    }
+
+    .do-day-items {
+      flex: 1;
+      padding: 4px 6px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow-y: auto;
+    }
+
+    .do-day-items .site-tag {
+      font-size: 11px;
+      padding: 3px 7px;
+      text-align: center;
+    }
+
+    /* Week sidebar summary — horizontal */
+    .do-week-sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      align-self: flex-start;
+    }
+
+    .do-week-sidebar-header {
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, var(--blue-50), transparent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .do-week-sidebar-header::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 12px;
+      background: var(--blue-500);
+      border-radius: 2px;
+    }
+
+    .do-week-sidebar-items {
+      padding: 8px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .do-week-sidebar-items .site-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      text-align: center;
+    }
+
+    .do-week-sidebar-empty {
+      padding: 12px 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Week divider label */
+    .do-week-label {
+      padding: 8px 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .do-week-label span {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .do-week-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ══════════════════════════════════════════
+       PAGE: Dag Planning
+       ══════════════════════════════════════════ */
+
+    .dp-toolbar {
+      padding: 0 36px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dp-toolbar label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .dp-toolbar input[type="date"] {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .dp-toolbar input[type="date"]:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+    }
+
+    .dp-content {
+      flex: 1;
+      display: flex;
+      padding: 0 36px 36px;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .dp-sites-grid {
+      flex: 1;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      align-content: start;
+      padding-right: 4px;
+      padding-bottom: 4px;
+    }
+
+    .dp-site-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: box-shadow 0.2s ease;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .dp-site-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .dp-site-card-header {
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, var(--blue-50), transparent);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dp-site-card-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--blue-500);
+      border-radius: 2px;
+    }
+
+    .dp-workers-drop {
+      min-height: 80px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .dp-workers-drop.drag-over {
+      background: var(--blue-50);
+    }
+
+    .dp-workers-drop .worker-tag {
+      position: relative;
+      padding-right: 24px;
+    }
+
+    .dp-empty-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 16px 0;
+      pointer-events: none;
+    }
+
+    .worker-tag {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #166534;
+      cursor: grab;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.15s ease;
+    }
+
+    .worker-tag:hover {
+      background: #dcfce7;
+      border-color: #4ade80;
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .worker-tag:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+
+    .worker-tag-remove {
+      position: absolute;
+      right: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 16px;
+      cursor: pointer;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+      transition: all 0.15s ease;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .worker-tag-remove:hover {
+      opacity: 1;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    /* Workers panel */
+    .dp-workers-panel {
+      width: 190px;
+      min-width: 190px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dp-workers-header {
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, #f0fdf4, transparent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dp-workers-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: #22c55e;
+      border-radius: 2px;
+    }
+
+    .dp-workers-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dp-workers-list .worker-tag {
+      text-align: center;
+      padding: 7px 10px;
+    }
+
+    /* ══════════════════════════════════════════
+       PAGE: Beheer
+       ══════════════════════════════════════════ */
+
+    .bh-content {
+      flex: 1;
+      display: flex;
+      padding: 0 36px 36px;
+      gap: 24px;
+      overflow: hidden;
+    }
+
+    .bh-panel {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.35s ease both;
+    }
+
+    .bh-panel:nth-child(2) {
+      animation-delay: 0.07s;
+    }
+
+    .bh-panel-header {
+      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to right, var(--blue-50), transparent);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bh-panel-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--blue-500);
+      border-radius: 2px;
+    }
+
+    .bh-panel:nth-child(2) .bh-panel-header {
+      background: linear-gradient(to right, #f0fdf4, transparent);
+    }
+
+    .bh-panel:nth-child(2) .bh-panel-header::before {
+      background: #22c55e;
+    }
+
+    .bh-count {
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--blue-100);
+      color: var(--blue-600);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .bh-panel:nth-child(2) .bh-count {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .bh-form-full {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bh-form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .bh-form-row-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bh-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bh-field-half { flex: 1; }
+    .bh-field-third { flex: 1; }
+
+    .bh-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .bh-required {
+      color: #ef4444;
+    }
+
+    .bh-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .bh-checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue-500);
+      cursor: pointer;
+    }
+
+    .bh-input {
+      flex: 1;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .bh-input:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+      background: var(--card-bg);
+    }
+
+    .bh-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .bh-add-btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      background: var(--blue-500);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(77, 141, 247, 0.25);
+      white-space: nowrap;
+    }
+
+    .bh-add-btn:hover {
+      background: var(--blue-600);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(77, 141, 247, 0.35);
+    }
+
+    .bh-add-btn:disabled {
+      background: #c5cdd8;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .bh-add-btn:disabled:hover {
+      background: #c5cdd8;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .bh-add-btn-green {
+      background: #22c55e;
+      box-shadow: 0 1px 3px rgba(34, 197, 94, 0.25);
+    }
+
+    .bh-add-btn-green:hover {
+      background: #16a34a;
+      box-shadow: 0 2px 6px rgba(34, 197, 94, 0.35);
+    }
+
+    .bh-table-wrap {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .bh-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .bh-table thead th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      background: #fafcff;
+      position: sticky;
+      top: 0;
+    }
+
+    .bh-table tbody tr {
+      transition: background 0.1s;
+    }
+
+    .bh-table tbody tr:hover {
+      background: var(--blue-50);
+    }
+
+    .bh-panel:nth-child(2) .bh-table tbody tr:hover {
+      background: #f0fdf4;
+    }
+
+    .bh-table tbody td {
+      padding: 10px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text);
+    }
+
+    .bh-col-action {
+      width: 80px;
+      text-align: center !important;
+    }
+
+    .bh-col-privat {
+      width: 60px;
+      text-align: center !important;
+    }
+
+    .bh-action-btns {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .bh-edit-btn,
+    .bh-delete-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .bh-edit-btn:hover {
+      background: rgba(77, 141, 247, 0.1);
+      color: var(--blue-500);
+    }
+
+    .bh-delete-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      width: 480px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px 24px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      border-radius: 2px;
+      background: var(--blue-500);
+    }
+
+    .modal-header.green::before {
+      background: #22c55e;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .modal-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .modal-field input[type="text"],
+    .modal-field input[type="number"],
+    .modal-field input[type="date"] {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .modal-field input:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+      background: var(--card-bg);
+    }
+
+    .modal-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-row .modal-field { flex: 1; }
+
+    .modal-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .modal-checkbox input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue-500);
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      padding: 16px 24px 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .modal-btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .modal-btn-cancel {
+      background: var(--bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .modal-btn-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .modal-btn-save {
+      background: var(--blue-500);
+      color: white;
+      box-shadow: 0 1px 3px rgba(77, 141, 247, 0.25);
+    }
+
+    .modal-btn-save:hover {
+      background: var(--blue-600);
+      transform: translateY(-1px);
+    }
+
+    .modal-btn-save.green {
+      background: #22c55e;
+      box-shadow: 0 1px 3px rgba(34, 197, 94, 0.25);
+    }
+
+    .modal-btn-save.green:hover {
+      background: #16a34a;
+    }
+
+    .bh-empty {
+      padding: 30px 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Shared ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .month-card {
+      animation: fadeIn 0.35s ease both;
+    }
+    .month-card:nth-child(2) { animation-delay: 0.07s; }
+    .month-card:nth-child(3) { animation-delay: 0.14s; }
+
+    .do-week-block {
+      animation: fadeIn 0.3s ease both;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="10"/><line x1="15" y1="4" x2="15" y2="10"/></svg>
+    </div>
+    <div class="sidebar-logo-text">
+      Planner
+      <span>Planning Tool</span>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <nav class="sidebar-nav" id="mainNav">
+    <button class="active" data-page="maandOverzicht">Maand Overzicht</button>
+    <button data-page="detailOverzicht">Detail Overzicht</button>
+    <button data-page="dagPlanning">Dag Planning</button>
+    <button data-page="beheer">Beheer</button>
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="page-header">
+    <div class="page-title" id="pageTitle">Maand Overzicht</div>
+    <div class="page-subtitle" id="pageSubtitle"></div>
+  </div>
+
+  <!-- ── Page: Maand Overzicht ── -->
+  <div class="page active" id="page-maandOverzicht">
+    <div class="mo-content">
+      <div class="months-column" id="monthsColumn"></div>
+      <div class="sites-panel">
+        <div class="sites-panel-header">Werven</div>
+        <div class="sites-list" id="sitesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Detail Overzicht ── -->
+  <div class="page" id="page-detailOverzicht">
+    <div class="do-toolbar">
+      <label>Van</label>
+      <input type="date" id="doDateFrom">
+      <label>tot</label>
+      <input type="date" id="doDateTo">
+    </div>
+    <div class="do-content" id="doContent"></div>
+  </div>
+
+  <!-- ── Page: Dag Planning ── -->
+  <div class="page" id="page-dagPlanning">
+    <div class="dp-toolbar">
+      <label>Datum</label>
+      <input type="date" id="dpDate">
+    </div>
+    <div class="dp-content">
+      <div class="dp-sites-grid" id="dpSitesGrid"></div>
+      <div class="dp-workers-panel">
+        <div class="dp-workers-header">Medewerkers</div>
+        <div class="dp-workers-list" id="dpWorkersList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Beheer ── -->
+  <div class="page" id="page-beheer">
+    <div class="bh-content">
+      <!-- Sites panel -->
+      <div class="bh-panel">
+        <div class="bh-panel-header">
+          <span>Werven</span>
+          <span class="bh-count" id="bhSitesCount">0</span>
+        </div>
+        <div class="bh-form-full">
+          <div class="bh-form-row">
+            <div class="bh-field bh-field-half">
+              <label class="bh-label">Werf naam <span class="bh-required">*</span></label>
+              <input type="text" id="bhSiteName" placeholder="Werfnaam" class="bh-input">
+            </div>
+            <div class="bh-field bh-field-half">
+              <label class="bh-label">Klant naam <span class="bh-required">*</span></label>
+              <input type="text" id="bhSiteClient" placeholder="Klant naam" class="bh-input">
+            </div>
+          </div>
+          <div class="bh-form-row">
+            <div class="bh-field bh-field-third">
+              <label class="bh-label">Gewenste uitvoeringsdatum</label>
+              <input type="date" id="bhSiteDate" class="bh-input">
+            </div>
+            <div class="bh-field bh-field-third">
+              <label class="bh-label">Duur (Dagen)</label>
+              <input type="number" id="bhSiteDuration" placeholder="Duur in dagen" class="bh-input" min="1">
+            </div>
+            <div class="bh-field bh-field-third">
+              <label class="bh-label">Transport</label>
+              <input type="text" id="bhSiteTransport" placeholder="Transport details" class="bh-input">
+            </div>
+          </div>
+          <div class="bh-form-row bh-form-row-footer">
+            <label class="bh-checkbox-label">
+              <input type="checkbox" id="bhSitePrivate">
+              <span>Privé klant?</span>
+            </label>
+            <button id="bhSiteAdd" class="bh-add-btn">Aanmaken</button>
+          </div>
+        </div>
+        <div class="bh-table-wrap">
+          <table class="bh-table" id="bhSitesTable">
+            <thead>
+            <tr>
+              <th>Werf</th>
+              <th>Klant</th>
+              <th>Datum</th>
+              <th>Duur</th>
+              <th class="bh-col-action"></th>
+            </tr>
+            </thead>
+            <tbody id="bhSitesBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Workers panel -->
+      <div class="bh-panel">
+        <div class="bh-panel-header">
+          <span>Medewerkers</span>
+          <span class="bh-count" id="bhWorkersCount">0</span>
+        </div>
+        <div class="bh-form-full">
+          <div class="bh-form-row">
+            <div class="bh-field bh-field-half">
+              <label class="bh-label">Voornaam <span class="bh-required">*</span></label>
+              <input type="text" id="bhWorkerFirst" placeholder="Voornaam" class="bh-input">
+            </div>
+            <div class="bh-field bh-field-half">
+              <label class="bh-label">Familienaam <span class="bh-required">*</span></label>
+              <input type="text" id="bhWorkerLast" placeholder="Familienaam" class="bh-input">
+            </div>
+          </div>
+          <div class="bh-form-row bh-form-row-footer">
+            <div></div>
+            <button id="bhWorkerAdd" class="bh-add-btn bh-add-btn-green">Aanmaken</button>
+          </div>
+        </div>
+        <div class="bh-table-wrap">
+          <table class="bh-table" id="bhWorkersTable">
+            <thead>
+            <tr>
+              <th>Voornaam</th>
+              <th>Familienaam</th>
+              <th class="bh-col-action"></th>
+            </tr>
+            </thead>
+            <tbody id="bhWorkersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Site Edit Modal ── -->
+<div class="modal-overlay" id="modalSite">
+  <div class="modal">
+    <div class="modal-header">Werf bewerken</div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Werf naam <span class="bh-required">*</span></label>
+          <input type="text" id="modalSiteName">
+        </div>
+        <div class="modal-field">
+          <label>Klant naam <span class="bh-required">*</span></label>
+          <input type="text" id="modalSiteClient">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Gewenste uitvoeringsdatum</label>
+          <input type="date" id="modalSiteDate">
+        </div>
+        <div class="modal-field">
+          <label>Duur (Dagen)</label>
+          <input type="number" id="modalSiteDuration" min="1">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Transport</label>
+          <input type="text" id="modalSiteTransport">
+        </div>
+        <div class="modal-field" style="justify-content:flex-end;">
+          <label class="modal-checkbox">
+            <input type="checkbox" id="modalSitePrivate">
+            <span>Privé klant?</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" id="modalSiteCancel">Annuleren</button>
+      <button class="modal-btn modal-btn-save" id="modalSiteSave">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Worker Edit Modal ── -->
+<div class="modal-overlay" id="modalWorker">
+  <div class="modal">
+    <div class="modal-header green">Medewerker bewerken</div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Voornaam <span class="bh-required">*</span></label>
+          <input type="text" id="modalWorkerFirst">
+        </div>
+        <div class="modal-field">
+          <label>Familienaam <span class="bh-required">*</span></label>
+          <input type="text" id="modalWorkerLast">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" id="modalWorkerCancel">Annuleren</button>
+      <button class="modal-btn modal-btn-save green" id="modalWorkerSave">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════
+  // DATA
+  // ══════════════════════════════════════════
+
+  const SITES = [
+    "Bouwplaats Noord", "Centrum Reno", "Haven Project", "Kantoor Zuid",
+    "School Oost", "Brug Werken", "Park Aanleg", "Station West"
+  ];
+
+  // Simulated planned data: weekNumber -> array of site names
+  // (In real app this comes from the Maand Overzicht assignments)
+  const WEEK_PLANS = {};
+  function initDemoPlans() {
+    const now = new Date();
+    const wk = getWeekNumber(now);
+    WEEK_PLANS[wk] = ["Haven Project", "Centrum Reno", "Kantoor Zuid"];
+    WEEK_PLANS[wk + 1] = ["Bouwplaats Noord", "School Oost"];
+    WEEK_PLANS[wk + 2] = ["Brug Werken", "Park Aanleg", "Station West", "Haven Project"];
+    WEEK_PLANS[wk + 3] = ["Centrum Reno"];
+  }
+
+  // ══════════════════════════════════════════
+  // NAVIGATION
+  // ══════════════════════════════════════════
+
+  const navButtons = document.querySelectorAll('#mainNav button');
+  const pages = document.querySelectorAll('.page');
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const pageId = btn.dataset.page;
+
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+
+      document.getElementById('pageTitle').textContent = btn.textContent;
+      document.getElementById('pageSubtitle').textContent = '';
+
+      if (pageId === 'maandOverzicht') renderMaandOverzicht();
+      if (pageId === 'detailOverzicht') renderDetailOverzicht();
+      if (pageId === 'dagPlanning') renderDagPlanning();
+      if (pageId === 'beheer') renderBeheer();
+    });
+  });
+
+  // ══════════════════════════════════════════
+  // HELPERS
+  // ══════════════════════════════════════════
+
+  function getMonthName(date) {
+    return date.toLocaleString('nl-BE', { month: 'long', year: 'numeric' });
+  }
+
+  function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function getWeeksInMonth(year, month) {
+    const weeks = new Set();
+    const date = new Date(year, month, 1);
+    while (date.getMonth() === month) {
+      weeks.add(getWeekNumber(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return Array.from(weeks).sort((a, b) => a - b);
+  }
+
+  function formatDateShort(date) {
+    const d = date.getDate();
+    const m = date.toLocaleString('nl-BE', { month: 'short' });
+    return d + ' ' + m;
+  }
+
+  function formatDateISO(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear() &&
+           a.getMonth() === b.getMonth() &&
+           a.getDate() === b.getDate();
+  }
+
+  function getMondayOfWeek(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    d.setDate(diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  // ══════════════════════════════════════════
+  // SITE TAGS
+  // ══════════════════════════════════════════
+
+  function createSiteTag(name) {
+    const tag = document.createElement('div');
+    tag.className = 'site-tag';
+    tag.textContent = name;
+    tag.draggable = true;
+    tag.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', name);
+    });
+    return tag;
+  }
+
+  function createDroppedTag(name) {
+    const tag = document.createElement('div');
+    tag.className = 'site-tag';
+    tag.draggable = true;
+    tag.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', name);
+    });
+    const label = document.createElement('span');
+    label.textContent = name;
+    tag.appendChild(label);
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'site-tag-remove';
+    removeBtn.textContent = '×';
+    removeBtn.title = 'Verwijderen';
+    removeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      tag.remove();
+    });
+    tag.appendChild(removeBtn);
+    return tag;
+  }
+
+  function createStaticTag(name) {
+    const tag = document.createElement('div');
+    tag.className = 'site-tag';
+    tag.textContent = name;
+    tag.style.cursor = 'default';
+    return tag;
+  }
+
+  // ══════════════════════════════════════════
+  // PAGE: Maand Overzicht
+  // ══════════════════════════════════════════
+
+  function renderMaandOverzicht() {
+    const container = document.getElementById('monthsColumn');
+    container.innerHTML = '';
+    const now = new Date();
+
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 2, 1);
+    document.getElementById('pageSubtitle').textContent =
+      start.toLocaleString('nl-BE', { month: 'short', year: 'numeric' }) + ' – ' +
+      end.toLocaleString('nl-BE', { month: 'short', year: 'numeric' });
+
+    for (let i = 0; i < 3; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const weeks = getWeeksInMonth(d.getFullYear(), d.getMonth());
+
+      const card = document.createElement('div');
+      card.className = 'month-card';
+
+      const header = document.createElement('div');
+      header.className = 'month-card-header';
+      const name = getMonthName(d);
+      header.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+      card.appendChild(header);
+
+      weeks.forEach(wk => {
+        const row = document.createElement('div');
+        row.className = 'week-row';
+
+        const weekLabel = document.createElement('div');
+        weekLabel.className = 'week-number';
+        weekLabel.textContent = wk;
+        row.appendChild(weekLabel);
+
+        for (let s = 0; s < 5; s++) {
+          const slot = document.createElement('div');
+          slot.className = 'drop-slot';
+          slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+          slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+          slot.addEventListener('drop', e => {
+            e.preventDefault();
+            slot.classList.remove('drag-over');
+            const siteName = e.dataTransfer.getData('text/plain');
+            const currentCount = slot.querySelectorAll('.site-tag').length;
+            if (siteName && currentCount < 5) {
+              const tag = createDroppedTag(siteName);
+              slot.appendChild(tag);
+            }
+          });
+          row.appendChild(slot);
+        }
+
+        card.appendChild(row);
+      });
+
+      container.appendChild(card);
+    }
+
+    // Render sites panel
+    const list = document.getElementById('sitesList');
+    list.innerHTML = '';
+    SITES.forEach(name => list.appendChild(createSiteTag(name)));
+  }
+
+  // ══════════════════════════════════════════
+  // PAGE: Detail Overzicht
+  // ══════════════════════════════════════════
+
+  function renderDetailOverzicht() {
+    const now = new Date();
+    const monday = getMondayOfWeek(now);
+
+    const fromInput = document.getElementById('doDateFrom');
+    const toInput = document.getElementById('doDateTo');
+
+    // Default: start of current week, 4 weeks out
+    if (!fromInput.value) {
+      fromInput.value = formatDateISO(monday);
+      const endDate = new Date(monday);
+      endDate.setDate(endDate.getDate() + 27);
+      toInput.value = formatDateISO(endDate);
+    }
+
+    renderDetailGrid();
+  }
+
+  function renderDetailGrid() {
+    const container = document.getElementById('doContent');
+    container.innerHTML = '';
+
+    const fromInput = document.getElementById('doDateFrom');
+    const toInput = document.getElementById('doDateTo');
+    const startDate = new Date(fromInput.value + 'T00:00:00');
+    const endDate = new Date(toInput.value + 'T00:00:00');
+
+    if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Align to Monday
+    const monday = getMondayOfWeek(startDate);
+    const DAY_NAMES = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+
+    // Add column headers (only once, first week block includes them)
+    let firstWeek = true;
+    let current = new Date(monday);
+
+    while (current <= endDate) {
+      const weekNum = getWeekNumber(current);
+      const weekMonday = new Date(current);
+
+      // Week label
+      const weekLabel = document.createElement('div');
+      weekLabel.className = 'do-week-label';
+      weekLabel.innerHTML = `<span>Week ${weekNum}</span>`;
+      container.appendChild(weekLabel);
+
+      // Week block: days grid + sidebar
+      const weekBlock = document.createElement('div');
+      weekBlock.className = 'do-week-block';
+      weekBlock.style.animationDelay = firstWeek ? '0s' : '0.05s';
+
+      // Days grid
+      const grid = document.createElement('div');
+      grid.className = 'do-days-grid';
+
+      // Day headers (every week for clarity)
+      if (firstWeek) {
+        DAY_NAMES.forEach(name => {
+          const h = document.createElement('div');
+          h.className = 'do-day-header';
+          h.textContent = name;
+          grid.appendChild(h);
+        });
+      }
+
+      // Day cards for this week
+      for (let d = 0; d < 7; d++) {
+        const dayDate = new Date(weekMonday);
+        dayDate.setDate(dayDate.getDate() + d);
+
+        const card = document.createElement('div');
+        card.className = 'do-day-card';
+
+        if (isSameDay(dayDate, today)) card.classList.add('today');
+        if (dayDate < startDate || dayDate > endDate) card.classList.add('outside');
+
+        const dateLabel = document.createElement('div');
+        dateLabel.className = 'do-day-date';
+        dateLabel.textContent = formatDateShort(dayDate);
+        card.appendChild(dateLabel);
+
+        const items = document.createElement('div');
+        items.className = 'do-day-items';
+
+        // Drop zone for this day
+        card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
+        card.addEventListener('dragleave', e => {
+          if (!card.contains(e.relatedTarget)) card.classList.remove('drag-over');
+        });
+        card.addEventListener('drop', e => {
+          e.preventDefault();
+          card.classList.remove('drag-over');
+          const siteName = e.dataTransfer.getData('text/plain');
+          if (siteName && items.querySelectorAll('.site-tag').length < 5) {
+            items.appendChild(createDroppedTag(siteName));
+          }
+        });
+
+        card.appendChild(items);
+        grid.appendChild(card);
+      }
+
+      weekBlock.appendChild(grid);
+
+      // Week sidebar — planned sites for this week
+      const sidebar = document.createElement('div');
+      sidebar.className = 'do-week-sidebar';
+
+      const sbHeader = document.createElement('div');
+      sbHeader.className = 'do-week-sidebar-header';
+      sbHeader.textContent = 'Week ' + weekNum;
+      sidebar.appendChild(sbHeader);
+
+      const planned = WEEK_PLANS[weekNum];
+      if (planned && planned.length > 0) {
+        const sbItems = document.createElement('div');
+        sbItems.className = 'do-week-sidebar-items';
+        planned.forEach(name => sbItems.appendChild(createSiteTag(name)));
+        sidebar.appendChild(sbItems);
+      } else {
+        const empty = document.createElement('div');
+        empty.className = 'do-week-sidebar-empty';
+        empty.textContent = 'Geen werven gepland';
+        sidebar.appendChild(empty);
+      }
+
+      weekBlock.appendChild(sidebar);
+      container.appendChild(weekBlock);
+
+      // Advance to next Monday
+      current.setDate(current.getDate() + 7);
+      firstWeek = false;
+    }
+  }
+
+  // Listen for date changes
+  document.getElementById('doDateFrom').addEventListener('change', renderDetailGrid);
+  document.getElementById('doDateTo').addEventListener('change', renderDetailGrid);
+
+  // ══════════════════════════════════════════
+  // PAGE: Dag Planning
+  // ══════════════════════════════════════════
+
+  const WORKERS = [
+    "Jan Peeters", "Koen De Smet", "Pieter Janssens", "Tom Maes",
+    "Bart Willems", "Luc Claes", "Marc Hendrickx", "Steven Jacobs",
+    "Kevin Mertens", "Dirk Van Damme"
+  ];
+
+  // Simulated: which sites are planned for a given date
+  // In real app this comes from Detail Overzicht assignments
+  const DAY_PLANS = {};
+  function initDayPlans() {
+    const today = formatDateISO(new Date());
+    DAY_PLANS[today] = ["Haven Project", "Centrum Reno", "Kantoor Zuid", "Brug Werken", "School Oost"];
+    // Tomorrow
+    const tmrw = new Date();
+    tmrw.setDate(tmrw.getDate() + 1);
+    DAY_PLANS[formatDateISO(tmrw)] = ["Bouwplaats Noord", "Park Aanleg", "Station West"];
+  }
+
+  function renderDagPlanning() {
+    const dateInput = document.getElementById('dpDate');
+    if (!dateInput.value) {
+      dateInput.value = formatDateISO(new Date());
+    }
+    renderDagGrid();
+  }
+
+  function renderDagGrid() {
+    const grid = document.getElementById('dpSitesGrid');
+    grid.innerHTML = '';
+
+    const dateInput = document.getElementById('dpDate');
+    const dateStr = dateInput.value;
+    const sites = DAY_PLANS[dateStr] || [];
+
+    if (sites.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'grid-column: 1/-1; text-align:center; padding:60px 20px;';
+      empty.innerHTML = `
+        <div style="color:var(--text-muted); font-style:italic; margin-bottom:16px;">Geen werven gepland voor deze dag</div>
+        <button id="dpGoToPlanning" style="
+          font-family: inherit;
+          font-size: 13px;
+          font-weight: 600;
+          padding: 9px 20px;
+          background: var(--blue-500);
+          color: white;
+          border: none;
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: all 0.15s ease;
+          box-shadow: 0 2px 6px rgba(77,141,247,0.3);
+        ">Plan een werf</button>
+      `;
+      grid.appendChild(empty);
+      document.getElementById('dpGoToPlanning').addEventListener('click', () => {
+        document.querySelector('[data-page="maandOverzicht"]').click();
+      });
+      document.getElementById('dpGoToPlanning').addEventListener('mouseenter', function() {
+        this.style.background = 'var(--blue-600)';
+        this.style.transform = 'translateY(-1px)';
+      });
+      document.getElementById('dpGoToPlanning').addEventListener('mouseleave', function() {
+        this.style.background = 'var(--blue-500)';
+        this.style.transform = '';
+      });
+    } else {
+      sites.forEach((siteName, i) => {
+        const card = document.createElement('div');
+        card.className = 'dp-site-card';
+        card.style.animationDelay = (i * 0.05) + 's';
+
+        const header = document.createElement('div');
+        header.className = 'dp-site-card-header';
+        header.textContent = siteName;
+        card.appendChild(header);
+
+        const dropZone = document.createElement('div');
+        dropZone.className = 'dp-workers-drop';
+
+        const hint = document.createElement('div');
+        hint.className = 'dp-empty-hint';
+        hint.textContent = 'Sleep medewerkers hierheen';
+        dropZone.appendChild(hint);
+
+        dropZone.addEventListener('dragover', e => {
+          e.preventDefault();
+          dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', e => {
+          if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', e => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+          const workerName = e.dataTransfer.getData('text/plain');
+          if (workerName) {
+            // Hide hint if present
+            const h = dropZone.querySelector('.dp-empty-hint');
+            if (h) h.remove();
+            dropZone.appendChild(createDroppedWorker(workerName));
+          }
+        });
+
+        card.appendChild(dropZone);
+        grid.appendChild(card);
+      });
+    }
+
+    // Render workers list
+    const list = document.getElementById('dpWorkersList');
+    list.innerHTML = '';
+    WORKERS.forEach(name => list.appendChild(createWorkerTag(name)));
+  }
+
+  function createWorkerTag(name) {
+    const tag = document.createElement('div');
+    tag.className = 'worker-tag';
+    tag.textContent = name;
+    tag.draggable = true;
+    tag.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', name);
+    });
+    return tag;
+  }
+
+  function createDroppedWorker(name) {
+    const tag = document.createElement('div');
+    tag.className = 'worker-tag';
+    tag.draggable = true;
+    tag.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', name);
+    });
+
+    const label = document.createElement('span');
+    label.textContent = name;
+    tag.appendChild(label);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'worker-tag-remove';
+    removeBtn.textContent = '×';
+    removeBtn.title = 'Verwijderen';
+    removeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const dropZone = tag.parentElement;
+      tag.remove();
+      // Show hint again if empty
+      if (dropZone && dropZone.querySelectorAll('.worker-tag').length === 0) {
+        const hint = document.createElement('div');
+        hint.className = 'dp-empty-hint';
+        hint.textContent = 'Sleep medewerkers hierheen';
+        dropZone.appendChild(hint);
+      }
+    });
+    tag.appendChild(removeBtn);
+    return tag;
+  }
+
+  document.getElementById('dpDate').addEventListener('change', renderDagGrid);
+
+  // ══════════════════════════════════════════
+  // PAGE: Beheer
+  // ══════════════════════════════════════════
+
+  // Managed lists with full field data
+  const managedSites = [
+    { name: "Bouwplaats Noord", client: "Van Hoeck NV", date: "2026-04-10", duration: 5, transport: "Vrachtwagen", private: false },
+    { name: "Centrum Reno", client: "Janssens", date: "2026-04-14", duration: 3, transport: "Bestelwagen", private: true },
+    { name: "Haven Project", client: "Port Authority", date: "2026-03-25", duration: 12, transport: "Eigen vervoer", private: false },
+    { name: "Kantoor Zuid", client: "Demeyer BVBA", date: "2026-04-01", duration: 2, transport: "", private: false },
+    { name: "School Oost", client: "Gemeente Tielt", date: "2026-04-07", duration: 8, transport: "Vrachtwagen", private: false },
+    { name: "Brug Werken", client: "AWV", date: "2026-05-01", duration: 20, transport: "Zwaar transport", private: false },
+    { name: "Park Aanleg", client: "Peeters", date: "2026-04-20", duration: 4, transport: "Bestelwagen", private: true },
+    { name: "Station West", client: "NMBS", date: "2026-05-10", duration: 15, transport: "Eigen vervoer", private: false }
+  ];
+
+  const managedWorkers = [
+    { first: "Jan", last: "Peeters" },
+    { first: "Koen", last: "De Smet" },
+    { first: "Pieter", last: "Janssens" },
+    { first: "Tom", last: "Maes" },
+    { first: "Bart", last: "Willems" },
+    { first: "Luc", last: "Claes" },
+    { first: "Marc", last: "Hendrickx" },
+    { first: "Steven", last: "Jacobs" },
+    { first: "Kevin", last: "Mertens" },
+    { first: "Dirk", last: "Van Damme" }
+  ];
+
+  function renderBeheer() {
+    renderBeheerSites();
+    renderBeheerWorkers();
+  }
+
+  function renderBeheerSites() {
+    const tbody = document.getElementById('bhSitesBody');
+    tbody.innerHTML = '';
+    document.getElementById('bhSitesCount').textContent = managedSites.length;
+
+    if (managedSites.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="5" class="bh-empty">Nog geen werven toegevoegd</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    managedSites.forEach((site, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${site.name}</td>
+        <td>${site.client}</td>
+        <td>${site.date ? new Date(site.date + 'T00:00:00').toLocaleDateString('nl-BE') : '—'}</td>
+        <td>${site.duration ? site.duration + 'd' : '—'}</td>
+      `;
+      const tdAction = document.createElement('td');
+      tdAction.className = 'bh-col-action';
+      const editBtn = document.createElement('button');
+      editBtn.className = 'bh-edit-btn';
+      editBtn.innerHTML = '✎';
+      editBtn.title = 'Bewerken';
+      editBtn.addEventListener('click', () => openSiteModal(idx));
+      tdAction.appendChild(editBtn);
+      tr.appendChild(tdAction);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderBeheerWorkers() {
+    const tbody = document.getElementById('bhWorkersBody');
+    tbody.innerHTML = '';
+    document.getElementById('bhWorkersCount').textContent = managedWorkers.length;
+
+    if (managedWorkers.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="3" class="bh-empty">Nog geen medewerkers toegevoegd</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    managedWorkers.forEach((worker, idx) => {
+      const tr = document.createElement('tr');
+
+      const tdFirst = document.createElement('td');
+      tdFirst.textContent = worker.first;
+      tr.appendChild(tdFirst);
+
+      const tdLast = document.createElement('td');
+      tdLast.textContent = worker.last;
+      tr.appendChild(tdLast);
+
+      const tdAction = document.createElement('td');
+      tdAction.className = 'bh-col-action';
+      const actionWrap = document.createElement('div');
+      actionWrap.className = 'bh-action-btns';
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'bh-edit-btn';
+      editBtn.innerHTML = '✎';
+      editBtn.title = 'Bewerken';
+      editBtn.addEventListener('click', () => openWorkerModal(idx));
+      actionWrap.appendChild(editBtn);
+
+      const btn = document.createElement('button');
+      btn.className = 'bh-delete-btn';
+      btn.textContent = '×';
+      btn.title = 'Verwijderen';
+      btn.addEventListener('click', () => {
+        managedWorkers.splice(idx, 1);
+        renderBeheerWorkers();
+      });
+      actionWrap.appendChild(btn);
+
+      tdAction.appendChild(actionWrap);
+      tr.appendChild(tdAction);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Add site
+  function updateSiteBtn() {
+    const name = document.getElementById('bhSiteName').value.trim();
+    const client = document.getElementById('bhSiteClient').value.trim();
+    document.getElementById('bhSiteAdd').disabled = !name || !client;
+  }
+
+  document.getElementById('bhSiteName').addEventListener('input', updateSiteBtn);
+  document.getElementById('bhSiteClient').addEventListener('input', updateSiteBtn);
+  updateSiteBtn();
+
+  document.getElementById('bhSiteAdd').addEventListener('click', () => {
+    const name = document.getElementById('bhSiteName').value.trim();
+    const client = document.getElementById('bhSiteClient').value.trim();
+    if (!name || !client) return;
+
+    managedSites.push({
+      name,
+      client,
+      date: document.getElementById('bhSiteDate').value || '',
+      duration: parseInt(document.getElementById('bhSiteDuration').value) || 0,
+      transport: document.getElementById('bhSiteTransport').value.trim(),
+      private: document.getElementById('bhSitePrivate').checked
+    });
+
+    // Clear form
+    document.getElementById('bhSiteName').value = '';
+    document.getElementById('bhSiteClient').value = '';
+    document.getElementById('bhSiteDate').value = '';
+    document.getElementById('bhSiteDuration').value = '';
+    document.getElementById('bhSiteTransport').value = '';
+    document.getElementById('bhSitePrivate').checked = false;
+
+    updateSiteBtn();
+    renderBeheerSites();
+  });
+
+  // Add worker
+  function updateWorkerBtn() {
+    const first = document.getElementById('bhWorkerFirst').value.trim();
+    const last = document.getElementById('bhWorkerLast').value.trim();
+    document.getElementById('bhWorkerAdd').disabled = !first || !last;
+  }
+
+  document.getElementById('bhWorkerFirst').addEventListener('input', updateWorkerBtn);
+  document.getElementById('bhWorkerLast').addEventListener('input', updateWorkerBtn);
+  updateWorkerBtn();
+
+  document.getElementById('bhWorkerAdd').addEventListener('click', () => {
+    const first = document.getElementById('bhWorkerFirst').value.trim();
+    const last = document.getElementById('bhWorkerLast').value.trim();
+    if (!first || !last) return;
+
+    managedWorkers.push({ first, last });
+
+    document.getElementById('bhWorkerFirst').value = '';
+    document.getElementById('bhWorkerLast').value = '';
+
+    updateWorkerBtn();
+    renderBeheerWorkers();
+  });
+
+  // ══════════════════════════════════════════
+  // MODALS
+  // ══════════════════════════════════════════
+
+  let editingSiteIdx = -1;
+  let editingWorkerIdx = -1;
+
+  function openSiteModal(idx) {
+    editingSiteIdx = idx;
+    const site = managedSites[idx];
+    document.getElementById('modalSiteName').value = site.name;
+    document.getElementById('modalSiteClient').value = site.client;
+    document.getElementById('modalSiteDate').value = site.date || '';
+    document.getElementById('modalSiteDuration').value = site.duration || '';
+    document.getElementById('modalSiteTransport').value = site.transport || '';
+    document.getElementById('modalSitePrivate').checked = site.private || false;
+    document.getElementById('modalSite').classList.add('active');
+  }
+
+  document.getElementById('modalSiteCancel').addEventListener('click', () => {
+    document.getElementById('modalSite').classList.remove('active');
+  });
+
+  document.getElementById('modalSite').addEventListener('click', e => {
+    if (e.target === e.currentTarget) document.getElementById('modalSite').classList.remove('active');
+  });
+
+  document.getElementById('modalSiteSave').addEventListener('click', () => {
+    const name = document.getElementById('modalSiteName').value.trim();
+    const client = document.getElementById('modalSiteClient').value.trim();
+    if (!name || !client) return;
+
+    managedSites[editingSiteIdx] = {
+      name,
+      client,
+      date: document.getElementById('modalSiteDate').value || '',
+      duration: parseInt(document.getElementById('modalSiteDuration').value) || 0,
+      transport: document.getElementById('modalSiteTransport').value.trim(),
+      private: document.getElementById('modalSitePrivate').checked
+    };
+
+    document.getElementById('modalSite').classList.remove('active');
+    renderBeheerSites();
+  });
+
+  function openWorkerModal(idx) {
+    editingWorkerIdx = idx;
+    const worker = managedWorkers[idx];
+    document.getElementById('modalWorkerFirst').value = worker.first;
+    document.getElementById('modalWorkerLast').value = worker.last;
+    document.getElementById('modalWorker').classList.add('active');
+  }
+
+  document.getElementById('modalWorkerCancel').addEventListener('click', () => {
+    document.getElementById('modalWorker').classList.remove('active');
+  });
+
+  document.getElementById('modalWorker').addEventListener('click', e => {
+    if (e.target === e.currentTarget) document.getElementById('modalWorker').classList.remove('active');
+  });
+
+  document.getElementById('modalWorkerSave').addEventListener('click', () => {
+    const first = document.getElementById('modalWorkerFirst').value.trim();
+    const last = document.getElementById('modalWorkerLast').value.trim();
+    if (!first || !last) return;
+
+    managedWorkers[editingWorkerIdx] = { first, last };
+
+    document.getElementById('modalWorker').classList.remove('active');
+    renderBeheerWorkers();
+  });
+
+  // ══════════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════════
+
+  initDemoPlans();
+  initDayPlans();
+  renderMaandOverzicht();
+</script>
+
+</body>
+</html>

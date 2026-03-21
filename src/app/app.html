@@ -1,11 +1,10 @@
-<section class="menu">
-  <div class="menu-items">
-    <a routerLink="planning-overview"><div>Planning</div></a>
-    <a routerLink="site-management"><div>Werf</div></a>
-    <a routerLink="worker-management"><div>Personeel</div></a>
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main">
+    <div class="page-header">
+      <h1 class="page-title">{{ pageMeta().title }}</h1>
+      <span class="page-subtitle">{{ pageMeta().subtitle }}</span>
+    </div>
+    <router-outlet></router-outlet>
   </div>
-</section>
-
-<section class="app-body">
-  <router-outlet></router-outlet>
-</section>
+</div>
