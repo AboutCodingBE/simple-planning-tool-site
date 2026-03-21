@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Site } from '../models/site.model';
 import { Worker } from '../models/worker.model';
@@ -101,6 +102,8 @@ function buildSeedDayPlans(): DayPlan[] {
 
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
+  private http = inject(HttpClient);
+
   private weekPlansSubject = new BehaviorSubject<WeekPlan[]>(buildSeedWeekPlans());
   private dayPlansSubject = new BehaviorSubject<DayPlan[]>(buildSeedDayPlans());
 
@@ -113,25 +116,31 @@ export class PlanningService {
   assignSiteToWeek(weekNumber: number, year: number, slotIndex: number, site: Site): void {
     const plans = this.weekPlansSubject.value;
     const existing = plans.find(p => p.weekNumber === weekNumber && p.year === year);
-
     if (existing) {
       const slot = existing.slots[slotIndex];
       if (slot.length >= 5 || slot.some(s => s.id === site.id)) return;
-      const updatedSlots = existing.slots.map((s, i) =>
-        i === slotIndex ? [...s, site] : s,
-      );
-      this.weekPlansSubject.next(
-        plans.map(p =>
-          p.weekNumber === weekNumber && p.year === year
-            ? { ...p, slots: updatedSlots }
-            : p,
-        ),
-      );
-    } else {
-      const slots = emptySlots();
-      slots[slotIndex] = [site];
-      this.weekPlansSubject.next([...plans, { weekNumber, year, slots }]);
     }
+
+    this.http.put('/api/planning/monthly', { week: weekNumber, year, site_id: site.id })
+      .subscribe(() => {
+        const current = this.weekPlansSubject.value;
+        const plan = current.find(p => p.weekNumber === weekNumber && p.year === year);
+
+        if (plan) {
+          const updatedSlots = plan.slots.map((s, i) =>
+            i === slotIndex ? [...s, site] : s,
+          );
+          this.weekPlansSubject.next(
+            current.map(p =>
+              p.weekNumber === weekNumber && p.year === year ? { ...p, slots: updatedSlots } : p,
+            ),
+          );
+        } else {
+          const slots = emptySlots();
+          slots[slotIndex] = [site];
+          this.weekPlansSubject.next([...current, { weekNumber, year, slots }]);
+        }
+      });
   }
 
   removeSiteFromWeek(weekNumber: number, year: number, slotIndex: number, siteId: number): void {
