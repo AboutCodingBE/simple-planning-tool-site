@@ -32,6 +32,7 @@
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.2s ease;
   animation: fadeIn 0.35s ease both;
+  flex-shrink: 0;
 }
 
 .month-card:nth-child(2) { animation-delay: 0.07s; }
