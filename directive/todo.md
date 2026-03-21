@@ -6,4 +6,3 @@
 - The removal of sites from a certain week
 
 ## Detail overview
-- The component itself should be scrollable. 
