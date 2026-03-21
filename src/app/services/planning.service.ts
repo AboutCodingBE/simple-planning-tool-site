@@ -223,17 +223,21 @@ export class PlanningService {
   assignSiteToDay(date: string, site: Site): void {
     const plans = this.dayPlansSubject.value;
     const existing = plans.find(p => p.date === date);
+    if (existing?.sites.some(s => s.id === site.id)) return;
 
-    if (existing) {
-      if (existing.sites.some(s => s.id === site.id)) return;
-      this.dayPlansSubject.next(
-        plans.map(p =>
-          p.date === date ? { ...p, sites: [...p.sites, site] } : p,
-        ),
-      );
-    } else {
-      this.dayPlansSubject.next([...plans, { date, sites: [site], workerAssignments: {} }]);
-    }
+    this.http.patch(`/api/planning/sites/${site.id}?date=${date}`, null)
+      .subscribe(() => {
+        const current = this.dayPlansSubject.value;
+        const plan = current.find(p => p.date === date);
+
+        if (plan) {
+          this.dayPlansSubject.next(
+            current.map(p => p.date === date ? { ...p, sites: [...p.sites, site] } : p),
+          );
+        } else {
+          this.dayPlansSubject.next([...current, { date, sites: [site], workerAssignments: {} }]);
+        }
+      });
   }
 
   removeSiteFromDay(date: string, siteId: number): void {
