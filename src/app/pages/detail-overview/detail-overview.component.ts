@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PlanningService } from '../../services/planning.service';
 import { SiteService } from '../../services/site.service';
@@ -67,6 +67,12 @@ export class DetailOverviewComponent {
 
   fromDate = signal(toDateStr(getMondayOf(new Date())));
   untilDate = signal(toDateStr(this.getFriday4WeeksAhead()));
+
+  constructor() {
+    effect(() => {
+      this.planningService.loadPlanning(this.fromDate(), this.untilDate());
+    });
+  }
 
   allSites = toSignal(this.siteService.getSites(), { initialValue: [] as Site[] });
   private dayPlans = toSignal(this.planningService.getDayPlans(), { initialValue: [] as DayPlan[] });

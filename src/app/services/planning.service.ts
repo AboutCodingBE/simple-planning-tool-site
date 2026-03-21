@@ -33,6 +33,43 @@ interface MonthlyPlanSiteResponse { id: number; name: string; }
 interface MonthlyPlanWeekResponse { number: number; sites: MonthlyPlanSiteResponse[]; }
 interface MonthlyPlanMonthResponse { month: string; weeks: MonthlyPlanWeekResponse[]; }
 
+interface PlanningSiteResponse { id: number; name: string; duration_in_days: number | null; status: string; }
+interface PlanningDayResponse  { date: string; sites: PlanningSiteResponse[]; }
+interface PlanningWeekResponse {
+  week: number;
+  monday: PlanningDayResponse; tuesday: PlanningDayResponse; wednesday: PlanningDayResponse;
+  thursday: PlanningDayResponse; friday: PlanningDayResponse;
+  saturday: PlanningDayResponse; sunday: PlanningDayResponse;
+}
+interface PlanningResponse { from: string; until: string; weeks: PlanningWeekResponse[]; }
+
+const WEEK_DAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
+
+function toSiteFromPlanning(s: PlanningSiteResponse): Site {
+  return {
+    id: s.id, name: s.name,
+    customerName: '', isPrivateCustomer: false,
+    desiredDate: null, durationInDays: s.duration_in_days, transport: null,
+    status: s.status as Site['status'],
+  };
+}
+
+function toDayPlans(response: PlanningResponse): DayPlan[] {
+  const dayPlans: DayPlan[] = [];
+
+  response.weeks.forEach(week => {
+    WEEK_DAY_KEYS.forEach(key => {
+      const day = week[key];
+      const sites = day.sites.map(toSiteFromPlanning);
+      if (sites.length > 0) {
+        dayPlans.push({ date: day.date, sites, workerAssignments: {} });
+      }
+    });
+  });
+
+  return dayPlans;
+}
+
 // Week numbers near month boundaries can belong to a different ISO year.
 // e.g. week 52/53 showing in January belongs to the previous year,
 //      week 1 showing in December belongs to the next year.
@@ -218,6 +255,12 @@ export class PlanningService {
 
   getDayPlans(): Observable<DayPlan[]> {
     return this.dayPlansSubject.asObservable();
+  }
+
+  loadPlanning(from: string, until: string): void {
+    this.http.get<PlanningResponse>(`/api/planning?from=${from}&until=${until}`).pipe(
+      map(toDayPlans),
+    ).subscribe(dayPlans => this.dayPlansSubject.next(dayPlans));
   }
 
   assignSiteToDay(date: string, site: Site): void {
