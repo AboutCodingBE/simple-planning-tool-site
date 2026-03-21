@@ -271,14 +271,17 @@ export class PlanningService {
     this.http.patch(`/api/planning/sites/${site.id}?date=${date}`, null)
       .subscribe(() => {
         const current = this.dayPlansSubject.value;
-        const plan = current.find(p => p.date === date);
-
+        // Remove the site from any day it currently appears on
+        const withoutSite = current.map(p =>
+          p.date === date ? p : { ...p, sites: p.sites.filter(s => s.id !== site.id) },
+        );
+        const plan = withoutSite.find(p => p.date === date);
         if (plan) {
           this.dayPlansSubject.next(
-            current.map(p => p.date === date ? { ...p, sites: [...p.sites, site] } : p),
+            withoutSite.map(p => p.date === date ? { ...p, sites: [...p.sites, site] } : p),
           );
         } else {
-          this.dayPlansSubject.next([...current, { date, sites: [site], workerAssignments: {} }]);
+          this.dayPlansSubject.next([...withoutSite, { date, sites: [site], workerAssignments: {} }]);
         }
       });
   }
