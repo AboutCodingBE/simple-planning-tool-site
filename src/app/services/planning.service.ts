@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Site } from '../models/site.model';
 import { Worker } from '../models/worker.model';
 import { WeekPlan, DayPlan } from '../models/planning.model';
@@ -24,6 +25,53 @@ function isoWeekYear(date: Date): number {
 
 function emptySlots(): Site[][] {
   return [[], [], [], [], []];
+}
+
+// ── API response shapes ───────────────────────────────────────────────────────
+
+interface MonthlyPlanSiteResponse { id: number; name: string; }
+interface MonthlyPlanWeekResponse { number: number; sites: MonthlyPlanSiteResponse[]; }
+interface MonthlyPlanMonthResponse { month: string; weeks: MonthlyPlanWeekResponse[]; }
+
+// Week numbers near month boundaries can belong to a different ISO year.
+// e.g. week 52/53 showing in January belongs to the previous year,
+//      week 1 showing in December belongs to the next year.
+function resolveWeekYear(weekNumber: number, calYear: number, calMonth: number): number {
+  if (weekNumber >= 52 && calMonth === 0) return calYear - 1;
+  if (weekNumber === 1  && calMonth === 11) return calYear + 1;
+  return calYear;
+}
+
+function toWeekPlans(months: MonthlyPlanMonthResponse[]): WeekPlan[] {
+  const now = new Date();
+  const result: WeekPlan[] = [];
+
+  months.forEach((monthData, i) => {
+    const totalMonth = now.getMonth() + i;
+    const calYear  = now.getFullYear() + Math.floor(totalMonth / 12);
+    const calMonth = totalMonth % 12;
+
+    monthData.weeks.forEach(week => {
+      const year = resolveWeekYear(week.number, calYear, calMonth);
+      if (result.some(p => p.weekNumber === week.number && p.year === year)) return;
+
+      // Backend has no slot concept — spread one site per slot column
+      const slots = emptySlots();
+      week.sites.forEach((s, idx) => {
+        if (idx < 5) {
+          slots[idx] = [{
+            id: s.id, name: s.name,
+            customerName: '', isPrivateCustomer: false,
+            desiredDate: null, durationInDays: null, transport: null, status: 'OPEN',
+          }];
+        }
+      });
+
+      result.push({ weekNumber: week.number, year, slots });
+    });
+  });
+
+  return result;
 }
 
 // Mock seed data ──────────────────────────────────────────────────────────────
@@ -104,8 +152,18 @@ function buildSeedDayPlans(): DayPlan[] {
 export class PlanningService {
   private http = inject(HttpClient);
 
-  private weekPlansSubject = new BehaviorSubject<WeekPlan[]>(buildSeedWeekPlans());
+  private weekPlansSubject = new BehaviorSubject<WeekPlan[]>([]);
   private dayPlansSubject = new BehaviorSubject<DayPlan[]>(buildSeedDayPlans());
+
+  constructor() {
+    this.refreshMonthly();
+  }
+
+  private refreshMonthly(): void {
+    this.http.get<MonthlyPlanMonthResponse[]>('/api/planning/monthly').pipe(
+      map(toWeekPlans),
+    ).subscribe(plans => this.weekPlansSubject.next(plans));
+  }
 
   // ── Week plans ──────────────────────────────────────────────────────────────
 
