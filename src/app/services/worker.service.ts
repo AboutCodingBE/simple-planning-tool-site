@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Worker } from '../models/worker.model';
 
 interface WorkerResponse {
@@ -39,16 +39,25 @@ export class WorkerService {
   }
 
   addWorker(worker: Omit<Worker, 'id'>): Observable<Worker> {
-    // TODO: replace with POST /api/workers
-    const newWorker: Worker = { ...worker, id: Date.now() };
-    this.workersSubject.next([...this.workersSubject.value, newWorker]);
-    return of(newWorker);
+    return this.http.post<WorkerResponse>('/api/workers', {
+      first_name: worker.firstName,
+      last_name: worker.lastName,
+    }).pipe(
+      map(toWorker),
+      tap(newWorker => this.workersSubject.next([...this.workersSubject.value, newWorker])),
+    );
   }
 
   updateWorker(worker: Worker): Observable<Worker> {
-    const updated = this.workersSubject.value.map(w => w.id === worker.id ? worker : w);
-    this.workersSubject.next(updated);
-    return of(worker);
+    return this.http.put<WorkerResponse>(`/api/workers/${worker.id}`, {
+      first_name: worker.firstName,
+      last_name: worker.lastName,
+    }).pipe(
+      map(toWorker),
+      tap(updated => this.workersSubject.next(
+        this.workersSubject.value.map(w => w.id === updated.id ? updated : w),
+      )),
+    );
   }
 
   deleteWorker(id: number): Observable<void> {
