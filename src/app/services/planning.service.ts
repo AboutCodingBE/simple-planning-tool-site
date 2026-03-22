@@ -346,21 +346,25 @@ export class PlanningService {
   }
 
   assignWorkerToSite(date: string, siteId: number, worker: Worker): void {
-    const plans = this.dayPlansSubject.value;
-    const existing = plans.find(p => p.date === date);
+    const existing = this.dayPlansSubject.value.find(p => p.date === date);
+    if (!existing) return;
+    const current = existing.workerAssignments[siteId] ?? [];
+    if (current.some(w => w.id === worker.id)) return;
 
-    if (existing) {
-      const current = existing.workerAssignments[siteId] ?? [];
-      if (current.some(w => w.id === worker.id)) return;
-      const updated = {
-        ...existing,
-        workerAssignments: {
-          ...existing.workerAssignments,
-          [siteId]: [...current, worker],
-        },
-      };
-      this.dayPlansSubject.next(plans.map(p => p.date === date ? updated : p));
-    }
+    this.http.patch(`/api/planning/sites/${siteId}/workers?workerId=${worker.id}`, null)
+      .subscribe(() => {
+        const plans = this.dayPlansSubject.value;
+        const plan = plans.find(p => p.date === date);
+        if (!plan) return;
+        const updated = {
+          ...plan,
+          workerAssignments: {
+            ...plan.workerAssignments,
+            [siteId]: [...(plan.workerAssignments[siteId] ?? []), worker],
+          },
+        };
+        this.dayPlansSubject.next(plans.map(p => p.date === date ? updated : p));
+      });
   }
 
   removeWorkerFromSite(date: string, siteId: number, workerId: number): void {
