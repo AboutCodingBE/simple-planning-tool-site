@@ -30,6 +30,7 @@ export class WorkerService {
     ).subscribe(workers => this.workersSubject.next(workers));
   }
 
+
   getWorkers(): Observable<Worker[]> {
     return this.workersSubject.asObservable();
   }
@@ -43,8 +44,8 @@ export class WorkerService {
       first_name: worker.firstName,
       last_name: worker.lastName,
     }).pipe(
+      tap(() => this.refresh()),
       map(toWorker),
-      tap(newWorker => this.workersSubject.next([...this.workersSubject.value, newWorker])),
     );
   }
 

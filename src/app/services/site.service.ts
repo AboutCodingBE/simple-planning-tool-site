@@ -84,8 +84,8 @@ export class SiteService {
       transport: site.transport,
     };
     return this.http.post<SiteResponse>('/api/sites', body).pipe(
+      tap(() => this.refresh()),
       map(toSite),
-      tap(newSite => this.sitesSubject.next([...this.sitesSubject.value, newSite])),
     );
   }
 
