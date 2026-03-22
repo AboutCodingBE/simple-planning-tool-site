@@ -6,16 +6,11 @@ import { Site } from '../models/site.model';
 
 // ── API response shapes ───────────────────────────────────────────────────────
 
-interface CustomerResponse {
-  id: number;
-  customer_name: string;
-  is_private_customer: boolean;
-}
-
 interface SiteResponse {
   id: number;
   name: string;
-  customer: CustomerResponse | null;
+  customer_name: string | null;
+  is_private_customer?: boolean;
   desired_date: string | null;
   planned_date: string | null;
   duration_in_days: number | null;
@@ -40,8 +35,8 @@ function toSite(r: SiteResponse): Site {
   return {
     id: r.id,
     name: r.name,
-    customerName: r.customer?.customer_name ?? '',
-    isPrivateCustomer: r.customer?.is_private_customer ?? false,
+    customerName: r.customer_name ?? '',
+    isPrivateCustomer: r.is_private_customer ?? false,
     desiredDate: r.desired_date,
     durationInDays: r.duration_in_days,
     transport: r.transport,
