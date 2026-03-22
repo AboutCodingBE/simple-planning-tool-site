@@ -6,3 +6,6 @@
 - The removal of sites from a certain week
 
 ## Detail overview
+
+## Day planning
+
