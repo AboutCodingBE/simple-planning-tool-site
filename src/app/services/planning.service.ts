@@ -43,6 +43,17 @@ interface PlanningWeekResponse {
 }
 interface PlanningResponse { from: string; until: string; weeks: PlanningWeekResponse[]; }
 
+interface DayPlanWorkerResponse { worker_id: string; worker_firstname: string; worker_lastname: string; }
+interface DayPlanSiteResponse {
+  site_id: string | number;
+  site_name: string;
+  execution_date: string;
+  duration_in_days: number;
+  site_status: string;
+  workers: DayPlanWorkerResponse[];
+}
+interface DayPlanResponse { date: string; plannedSites: DayPlanSiteResponse[]; }
+
 const WEEK_DAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 
 function toSiteFromPlanning(s: PlanningSiteResponse): Site {
@@ -52,6 +63,28 @@ function toSiteFromPlanning(s: PlanningSiteResponse): Site {
     desiredDate: null, durationInDays: s.duration_in_days, transport: null,
     status: s.status as Site['status'],
   };
+}
+
+function toDayPlan(response: DayPlanResponse): DayPlan {
+  const sites: Site[] = [];
+  const workerAssignments: Record<number, Worker[]> = {};
+
+  response.plannedSites.forEach(s => {
+    const siteId = Number(s.site_id);
+    sites.push({
+      id: siteId, name: s.site_name,
+      customerName: '', isPrivateCustomer: false,
+      desiredDate: s.execution_date, durationInDays: s.duration_in_days,
+      transport: null, status: s.site_status as Site['status'],
+    });
+    workerAssignments[siteId] = s.workers.map(w => ({
+      id: Number(w.worker_id),
+      firstName: w.worker_firstname,
+      lastName: w.worker_lastname,
+    }));
+  });
+
+  return { date: response.date, sites, workerAssignments };
 }
 
 function toDayPlans(response: PlanningResponse): DayPlan[] {
@@ -261,6 +294,20 @@ export class PlanningService {
     this.http.get<PlanningResponse>(`/api/planning?from=${from}&until=${until}`).pipe(
       map(toDayPlans),
     ).subscribe(dayPlans => this.dayPlansSubject.next(dayPlans));
+  }
+
+  loadDayPlan(date: string): void {
+    this.http.get<DayPlanResponse>(`/api/planning/day?date=${date}`).pipe(
+      map(toDayPlan),
+    ).subscribe(dayPlan => {
+      const current = this.dayPlansSubject.value;
+      const exists = current.some(p => p.date === date);
+      this.dayPlansSubject.next(
+        exists
+          ? current.map(p => p.date === date ? dayPlan : p)
+          : [...current, dayPlan],
+      );
+    });
   }
 
   assignSiteToDay(date: string, site: Site): void {

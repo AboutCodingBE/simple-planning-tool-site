@@ -1,24 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Worker } from '../models/worker.model';
 
-const MOCK_WORKERS: Worker[] = [
-  { id: 1, firstName: 'Luc', lastName: 'Vermeersch' },
-  { id: 2, firstName: 'Joris', lastName: 'De Smedt' },
-  { id: 3, firstName: 'Pieter', lastName: 'Van den Berg' },
-  { id: 4, firstName: 'Michiel', lastName: 'Claeys' },
-  { id: 5, firstName: 'Thomas', lastName: 'Bogaert' },
-  { id: 6, firstName: 'Kevin', lastName: 'Maes' },
-  { id: 7, firstName: 'Bram', lastName: 'Declercq' },
-  { id: 8, firstName: 'Jonas', lastName: 'Willems' },
-  { id: 9, firstName: 'Stef', lastName: 'Hermans' },
-  { id: 10, firstName: 'Wout', lastName: 'Peeters' },
-];
+interface WorkerResponse {
+  id: number;
+  first_name: string;
+  last_name: string;
+  date_of_creation: string;
+}
+
+function toWorker(r: WorkerResponse): Worker {
+  return { id: r.id, firstName: r.first_name, lastName: r.last_name };
+}
 
 @Injectable({ providedIn: 'root' })
 export class WorkerService {
-  private workersSubject = new BehaviorSubject<Worker[]>(MOCK_WORKERS);
-  private nextId = MOCK_WORKERS.length + 1;
+  private http = inject(HttpClient);
+  private workersSubject = new BehaviorSubject<Worker[]>([]);
+
+  constructor() {
+    this.refresh();
+  }
+
+  private refresh(): void {
+    this.http.get<WorkerResponse[]>('/api/workers').pipe(
+      map(workers => workers.map(toWorker)),
+    ).subscribe(workers => this.workersSubject.next(workers));
+  }
 
   getWorkers(): Observable<Worker[]> {
     return this.workersSubject.asObservable();
@@ -29,7 +39,8 @@ export class WorkerService {
   }
 
   addWorker(worker: Omit<Worker, 'id'>): Observable<Worker> {
-    const newWorker: Worker = { ...worker, id: this.nextId++ };
+    // TODO: replace with POST /api/workers
+    const newWorker: Worker = { ...worker, id: Date.now() };
     this.workersSubject.next([...this.workersSubject.value, newWorker]);
     return of(newWorker);
   }

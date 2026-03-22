@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { PlanningService } from '../../services/planning.service';
@@ -21,6 +21,12 @@ export class DayPlanningComponent {
   private router = inject(Router);
 
   selectedDate = signal(new Date().toISOString().split('T')[0]);
+
+  constructor() {
+    effect(() => {
+      this.planningService.loadDayPlan(this.selectedDate());
+    });
+  }
   allWorkers = toSignal(this.workerService.getWorkers(), { initialValue: [] as Worker[] });
   private dayPlans = toSignal(this.planningService.getDayPlans(), { initialValue: [] as DayPlan[] });
 
